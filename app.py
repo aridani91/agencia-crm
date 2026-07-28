@@ -6,39 +6,37 @@ from datetime import date
 # CONFIGURACIÓN DE PÁGINA Y CSS PREMIUM
 # ==========================================
 st.set_page_config(
-    page_title="Agencia OS",
+    page_title="Presencia Web Pro - Agencia OS",
     page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Inyección de CSS personalizado para estética SaaS Moderna
+# Estilos CSS avanzados para interfaz SaaS moderna
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     
-    /* Fuente global */
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
     
-    /* Fondo principal sutilmente oscurecido */
     .stApp {
         background-color: #0b0f17;
     }
     
-    /* Tarjetas personalizadas del Dashboard */
+    /* Tarjetas de métricas */
     .dash-card {
         background: linear-gradient(135deg, #161b26 0%, #11141d 100%);
         border: 1px solid #232a3b;
         border-radius: 16px;
-        padding: 22px;
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.4);
         margin-bottom: 15px;
     }
     
     .dash-card-title {
-        color: #8b949e;
+        color: #94a3b8;
         font-size: 13px;
         font-weight: 600;
         text-transform: uppercase;
@@ -48,12 +46,12 @@ st.markdown("""
     
     .dash-card-value {
         color: #ffffff;
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 800;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
     
-    /* Badges de estado */
+    /* Etiquetas / Badges */
     .badge-success {
         background-color: rgba(16, 185, 129, 0.15);
         color: #10b981;
@@ -84,27 +82,26 @@ st.markdown("""
         display: inline-block;
     }
     
-    /* Banner de bienvenida */
+    /* Hero Banner */
     .hero-banner {
         background: linear-gradient(90deg, #1e1b4b 0%, #31104b 50%, #0f172a 100%);
         border: 1px solid #3730a3;
         border-radius: 18px;
-        padding: 28px;
+        padding: 24px;
         margin-bottom: 25px;
     }
     
-    /* Botones estilizados */
+    /* Botones */
     .stButton>button {
         border-radius: 10px !important;
         font-weight: 600 !important;
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
         color: white !important;
         border: none !important;
-        padding: 0.6rem 1.2rem !important;
+        padding: 0.5rem 1.2rem !important;
         box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3) !important;
     }
     
-    /* Ajustes generales de tablas */
     div[data-testid="stDataFrame"] {
         border: 1px solid #232a3b;
         border-radius: 12px;
@@ -118,16 +115,29 @@ def render_html_clean(html_text):
     clean_text = "\n".join([line.strip() for line in html_text.split("\n")])
     st.markdown(clean_text, unsafe_allow_html=True)
 
+# Formateador de moneda en español (evita confusiones de coma/punto)
+def formato_euro(valor):
+    return f"{valor:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+
 # ==========================================
 # INICIALIZACIÓN DE DATOS (PERSISTENCIA)
 # ==========================================
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
+        {"Cliente": "Clínica Dental Murcia S.L.", "Contacto": "Dr. Antonio", "Fase": "Cierre Ganado", "Valor (€)": 605.0, "Prioridad": "Alta 🔴"},
         {"Cliente": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Fase": "Propuesta Enviada", "Valor (€)": 2500.0, "Prioridad": "Alta 🔴"},
         {"Cliente": "Hotel Costa Azul", "Contacto": "Elena Soria", "Fase": "Contacto Inicial", "Valor (€)": 1200.0, "Prioridad": "Media 🟡"},
         {"Cliente": "Clínica Estética Aura", "Contacto": "Dr. Roberto Ruiz", "Fase": "Negociación", "Valor (€)": 4800.0, "Prioridad": "Alta 🔴"},
-        {"Cliente": "Moda Urbana", "Contacto": "Marta Vidal", "Fase": "Cierre Ganado", "Valor (€)": 3000.0, "Prioridad": "Baja 🟢"},
         {"Cliente": "Panadería Gourmet", "Contacto": "Javier López", "Fase": "Propuesta Enviada", "Valor (€)": 1500.0, "Prioridad": "Media 🟡"}
+    ])
+
+if "proyectos" not in st.session_state:
+    st.session_state.proyectos = pd.DataFrame([
+        {"Proyecto": "Posicionamiento SEO & Campañas", "Cliente": "Clínica Dental Murcia S.L.", "Estado": "En Progreso", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-15"},
+        {"Proyecto": "Rediseño Web Corporativo", "Cliente": "Gimnasio FitLife", "Estado": "Pendiente", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-20"},
+        {"Proyecto": "Estrategia Local Google Maps", "Cliente": "Hotel Costa Azul", "Estado": "Pendiente", "Prioridad": "Media 🟡", "Fecha Límite": "2026-08-30"},
+        {"Proyecto": "Landing Page Captación", "Cliente": "Clínica Estética Aura", "Estado": "En Revisión", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-10"},
+        {"Proyecto": "Branding & Redes Sociales", "Cliente": "Panadería Gourmet", "Estado": "En Progreso", "Prioridad": "Media 🟡", "Fecha Límite": "2026-09-05"}
     ])
 
 if "facturas" not in st.session_state:
@@ -137,9 +147,9 @@ if "facturas" not in st.session_state:
 
 if "gastos" not in st.session_state:
     st.session_state.gastos = pd.DataFrame([
-        {"Concepto": "Herramientas Software", "Categoría": "Suscripciones", "Importe (€)": 450.0, "Fecha": "2026-07-05"},
-        {"Concepto": "Servidores & Hosting", "Categoría": "Infraestructura", "Importe (€)": 250.0, "Fecha": "2026-07-12"},
-        {"Concepto": "Campañas Meta Ads", "Categoría": "Marketing", "Importe (€)": 800.0, "Fecha": "2026-07-20"}
+        {"Concepto": "Herramientas SEO & Software", "Categoría": "Suscripciones", "Importe (€)": 450.0, "Fecha": "2026-07-05"},
+        {"Concepto": "Servidores & Hosting Pro", "Categoría": "Infraestructura", "Importe (€)": 250.0, "Fecha": "2026-07-12"},
+        {"Concepto": "Publicidad Meta Ads", "Categoría": "Marketing", "Importe (€)": 800.0, "Fecha": "2026-07-20"}
     ])
 
 # ==========================================
@@ -147,31 +157,27 @@ if "gastos" not in st.session_state:
 # ==========================================
 
 def mostrar_dashboard():
-    # Banner de bienvenida tipo SaaS
     html_banner = """
     <div class="hero-banner">
-        <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px 0;">⚡ Panel de Control de la Agencia</h1>
-        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Resumen en tiempo real del rendimiento operativo, financiero y comercial.</p>
+        <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro — Control General</h1>
+        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Panel consolidado con métricas operativas, comerciales y financieras en tiempo real.</p>
     </div>
     """
     render_html_clean(html_banner)
     
-    # Cálculos en tiempo real
-    total_ingresos = st.session_state.facturas["Total (€)"].sum()
-    total_gastos = st.session_state.gastos["Importe (€)"].sum()
+    total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
+    total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
     beneficio = total_ingresos - total_gastos
-    valor_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0
-    total_prospects = len(st.session_state.leads)
+    valor_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0.0
     
-    # Tarjetas KPI con CSS estilizado
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         render_html_clean(f"""
         <div class="dash-card">
-            <div class="dash-card-title">Facturación Total</div>
-            <div class="dash-card-value">{total_ingresos:,.2f} €</div>
-            <span class="badge-success">↑ 100% Facturado</span>
+            <div class="dash-card-title">Facturación Emitida</div>
+            <div class="dash-card-value">{formato_euro(total_ingresos)}</div>
+            <span class="badge-success">Ingresos Reales</span>
         </div>
         """)
         
@@ -179,8 +185,8 @@ def mostrar_dashboard():
         render_html_clean(f"""
         <div class="dash-card">
             <div class="dash-card-title">Beneficio Neto</div>
-            <div class="dash-card-value" style="color: {'#10b981' if beneficio >= 0 else '#ef4444'};">{beneficio:,.2f} €</div>
-            <span class="badge-indigo">Margen Real</span>
+            <div class="dash-card-value" style="color: {'#10b981' if beneficio >= 0 else '#ef4444'};">{formato_euro(beneficio)}</div>
+            <span class="badge-indigo">Ingresos - Gastos</span>
         </div>
         """)
         
@@ -188,57 +194,50 @@ def mostrar_dashboard():
         render_html_clean(f"""
         <div class="dash-card">
             <div class="dash-card-title">Pipeline Comercial</div>
-            <div class="dash-card-value">{valor_pipeline:,.2f} €</div>
-            <span class="badge-warning">{total_prospects} Oportunidades</span>
+            <div class="dash-card-value">{formato_euro(valor_pipeline)}</div>
+            <span class="badge-warning">{len(st.session_state.leads)} Prospects</span>
         </div>
         """)
         
     with c4:
         render_html_clean(f"""
         <div class="dash-card">
-            <div class="dash-card-title">Proyectos Activos</div>
-            <div class="dash-card-value">3</div>
-            <span class="badge-indigo">1 Entregable HOY</span>
+            <div class="dash-card-title">Proyectos en Curso</div>
+            <div class="dash-card-value">{len(st.session_state.proyectos)}</div>
+            <span class="badge-indigo">Sincronizados</span>
         </div>
         """)
     
-    st.write("") # Espaciador
-    
-    # Grid de 2 columnas: Gráfica de Tendencia + Actividad Reciente
+    st.write("")
     col_izq, col_der = st.columns([1.8, 1.2], gap="large")
     
     with col_izq:
-        st.subheader("📈 Tendencia Financiera (2026)")
-        
-        # Generación de datos visuales armoniosos
+        st.subheader("📈 Resumen de Crecimiento")
         df_tendencia = pd.DataFrame({
             "Mes": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul"],
-            "Ingresos (€)": [4200, 5100, 4800, 6200, 5900, 7100, total_ingresos if total_ingresos > 0 else 8500],
+            "Ingresos (€)": [4200, 5100, 4800, 6200, 5900, 7100, total_ingresos],
             "Gastos (€)": [2100, 2300, 2400, 2900, 2700, 3100, total_gastos]
         }).set_index("Mes")
-        
-        # Gráfica de área moderna
         st.area_chart(df_tendencia, color=["#6366f1", "#ef4444"])
         
     with col_der:
-        st.subheader("🔔 Feed de Actividad y Estado")
-        
-        feed_html = """
+        st.subheader("🔔 Feed de Operaciones")
+        feed_html = f"""
         <div style="background: #161b26; border: 1px solid #232a3b; border-radius: 14px; padding: 18px;">
             <div style="margin-bottom: 16px; border-bottom: 1px solid #232a3b; padding-bottom: 12px;">
                 <span class="badge-success">Facturación</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Nueva factura registrada</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">Clínica Dental Murcia S.L. • Hace un momento</p>
+                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Última factura cobrada</p>
+                <p style="color: #64748b; font-size: 12px; margin: 0;">Clínica Dental Murcia S.L. • {formato_euro(total_ingresos)}</p>
             </div>
             <div style="margin-bottom: 16px; border-bottom: 1px solid #232a3b; padding-bottom: 12px;">
                 <span class="badge-warning">CRM</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Propuesta enviada</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">Gimnasio FitLife (2.500 €)</p>
+                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Valor Total Oportunidades</p>
+                <p style="color: #64748b; font-size: 12px; margin: 0;">{formato_euro(valor_pipeline)} en negociación</p>
             </div>
             <div>
-                <span class="badge-indigo">Operaciones</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Sprint de Proyectos en curso</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">3 entregables en revisión esta semana</p>
+                <span class="badge-indigo">Proyectos</span>
+                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Carga Operativa</p>
+                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.proyectos)} clientes activos en desarrollo</p>
             </div>
         </div>
         """
@@ -246,22 +245,22 @@ def mostrar_dashboard():
 
 
 def mostrar_crm():
-    st.title("🎯 CRM & Prospección")
-    st.markdown("Gestión interactiva de clientes. **Edita las celdas directamente o añade/elimina filas.**")
+    st.title("🎯 CRM & Prospección Comercial")
+    st.markdown("Gestión ágil de leads. **Haz doble clic en cualquier celda para modificar datos o pulsa 'Delete' sobre una fila seleccionada para borrarla.**")
     
-    total_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0
+    total_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0.0
     leads_count = len(st.session_state.leads)
     
     c1, c2, c3 = st.columns(3)
-    c1.metric("Total Prospects", f"{leads_count}")
-    c2.metric("Valor del Pipeline", f"{total_pipeline:,.2f} €")
-    c3.metric("Promedio / Lead", f"{(total_pipeline/leads_count) if leads_count > 0 else 0:,.2f} €")
+    c1.metric("Oportunidades Totales", f"{leads_count}")
+    c2.metric("Valor del Pipeline", formato_euro(total_pipeline))
+    c3.metric("Promedio por Lead", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
     
     st.divider()
     
-    st.subheader("📋 Embudo de Ventas (Pipeline)")
-    st.caption("💡 Haz doble clic en cualquier celda para editar, o selecciona filas y usa la tecla 'Supr' / 'Delete' para eliminar.")
+    st.subheader("📋 Tabla de Leads y Estado Comercial")
     
+    # Editor dinámico de datos
     edited_leads = st.data_editor(
         st.session_state.leads,
         num_rows="dynamic",
@@ -272,7 +271,7 @@ def mostrar_crm():
     
     st.divider()
     
-    with st.expander("➕ Añadir Nuevo Lead mediante Formulario"):
+    with st.expander("➕ Añadir Nuevo Lead Rápidamente"):
         with st.form("form_nuevo_lead", clear_on_submit=True):
             col_a, col_b = st.columns(2)
             cliente = col_a.text_input("Nombre de la Empresa / Cliente")
@@ -283,7 +282,7 @@ def mostrar_crm():
             valor = col_d.number_input("Valor Estimado (€)", value=1000.0, step=100.0)
             prioridad = col_e.selectbox("Prioridad", ["Alta 🔴", "Media 🟡", "Baja 🟢"])
             
-            if st.form_submit_button("Guardar Lead"):
+            if st.form_submit_button("Guardar en el CRM"):
                 if cliente:
                     nuevo_registro = pd.DataFrame([{
                         "Cliente": cliente,
@@ -293,7 +292,7 @@ def mostrar_crm():
                         "Prioridad": prioridad
                     }])
                     st.session_state.leads = pd.concat([st.session_state.leads, nuevo_registro], ignore_index=True)
-                    st.success(f"¡Lead '{cliente}' registrado correctamente!")
+                    st.success(f"¡Lead '{cliente}' añadido!")
                     st.rerun()
 
 
@@ -316,9 +315,9 @@ def mostrar_facturacion():
         cuota_iva = base_imponible * (iva / 100)
         total = base_imponible + cuota_iva
         
-        st.markdown(f"**Total Factura:** <span style='color:#10b981; font-size:18px; font-weight:700;'>{total:.2f} €</span>", unsafe_allow_html=True)
+        st.markdown(f"**Total Factura:** <span style='color:#10b981; font-size:18px; font-weight:700;'>{formato_euro(total)}</span>", unsafe_allow_html=True)
         
-        if st.button("💾 Registrar y Guardar Factura"):
+        if st.button("💾 Registrar Factura"):
             nueva_factura = pd.DataFrame([{
                 "Número": num_factura,
                 "Cliente": cliente,
@@ -328,15 +327,15 @@ def mostrar_facturacion():
                 "Total (€)": total
             }])
             st.session_state.facturas = pd.concat([st.session_state.facturas, nueva_factura], ignore_index=True)
-            st.success(f"Factura {num_factura} registrada correctamente.")
+            st.success(f"Factura {num_factura} registrada. ¡Añadida automáticamente a tus Finanzas!")
 
     with col2:
         st.subheader("👁️ Vista Previa del Documento")
         
         html_factura = f"""
         <div style="background-color: #ffffff; padding: 32px; border-radius: 12px; color: #111111; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif;">
-            <h2 style="color: #0f172a; margin: 0 0 4px 0; font-size: 24px; font-weight: 800;">MI AGENCIA DIGITAL</h2>
-            <p style="color: #64748b; font-size: 12px; margin: 0 0 20px 0;">NIF: B99887766 | info@miagencia.com</p>
+            <h2 style="color: #0f172a; margin: 0 0 4px 0; font-size: 24px; font-weight: 800;">Presencia Web Pro</h2>
+            <p style="color: #64748b; font-size: 12px; margin: 0 0 20px 0;">NIF: B99887766 | contacto@presenciawebpro.com</p>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 20px;">
             <p style="font-size: 13px; margin: 3px 0;"><strong>Factura Nº:</strong> {num_factura}</p>
             <p style="font-size: 13px; margin: 3px 0 16px 0;"><strong>Fecha:</strong> {date.today()}</p>
@@ -354,14 +353,14 @@ def mostrar_facturacion():
                 <tbody>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                         <td style="padding: 10px;">{concepto}</td>
-                        <td style="text-align: right; padding: 10px;">{base_imponible:.2f} €</td>
+                        <td style="text-align: right; padding: 10px;">{formato_euro(base_imponible)}</td>
                     </tr>
                 </tbody>
             </table>
             <div style="text-align: right; font-size: 13px;">
-                <p style="margin: 4px 0;">Base Imponible: <strong>{base_imponible:.2f} €</strong></p>
-                <p style="margin: 4px 0;">IVA ({iva}%): <strong>{cuota_iva:.2f} €</strong></p>
-                <h3 style="margin-top: 10px; font-size: 22px; color: #0f172a;">Total: {total:.2f} €</h3>
+                <p style="margin: 4px 0;">Base Imponible: <strong>{formato_euro(base_imponible)}</strong></p>
+                <p style="margin: 4px 0;">IVA ({iva}%): <strong>{formato_euro(cuota_iva)}</strong></p>
+                <h3 style="margin-top: 10px; font-size: 22px; color: #0f172a;">Total: {formato_euro(total)}</h3>
             </div>
         </div>
         """
@@ -371,47 +370,88 @@ def mostrar_facturacion():
 
 def mostrar_tareas_proyectos():
     st.title("📋 Tareas & Proyectos")
-    st.markdown("Control de estados y entregables operativos.")
+    st.markdown("Gestión interactiva de proyectos. **Puedes editar estados, clientes o fechas haciendo doble clic sobre las celdas.**")
     
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Proyectos Activos", "3")
-    c2.metric("Pendientes", "1")
-    c3.metric("Entregas esta semana", "1")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Proyectos Totales", f"{len(st.session_state.proyectos)}")
+    col2.metric("En Progreso", f"{len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Progreso'])}")
+    col3.metric("Pendientes", f"{len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Pendiente'])}")
     
     st.divider()
     
-    st.subheader("Lista de Proyectos")
-    proyectos_df = pd.DataFrame([
-        {"Proyecto": "Diseño Web Corporativa", "Cliente": "Clínica Dental Murcia", "Estado": "En Progreso", "Prioridad": "Alta 🔴"},
-        {"Proyecto": "Campaña SEO Local", "Cliente": "Abogados Martínez", "Estado": "Pendiente", "Prioridad": "Media 🟡"},
-        {"Proyecto": "Auditoría Técnica", "Cliente": "Tech Solutions", "Estado": "En Revisión", "Prioridad": "Alta 🔴"}
-    ])
-    st.dataframe(proyectos_df, use_container_width=True, hide_index=True)
+    st.subheader("🛠️ Control Operativo de Proyectos")
+    
+    # Editor interactivo de proyectos
+    edited_proyectos = st.data_editor(
+        st.session_state.proyectos,
+        num_rows="dynamic",
+        use_container_width=True,
+        key="editor_proyectos"
+    )
+    st.session_state.proyectos = edited_proyectos
+    
+    st.divider()
+    
+    with st.expander("➕ Crear Nuevo Proyecto"):
+        with st.form("form_nuevo_proyecto", clear_on_submit=True):
+            c1, c2 = st.columns(2)
+            nombre_p = c1.text_input("Nombre del Proyecto")
+            cliente_p = c2.text_input("Cliente Asignado")
+            
+            c3, c4, c5 = st.columns(3)
+            estado_p = c3.selectbox("Estado", ["Pendiente", "En Progreso", "En Revisión", "Completado"])
+            prioridad_p = c4.selectbox("Prioridad", ["Alta 🔴", "Media 🟡", "Baja 🟢"])
+            fecha_p = c5.date_input("Fecha Límite")
+            
+            if st.form_submit_button("Guardar Proyecto"):
+                if nombre_p:
+                    nuevo_p = pd.DataFrame([{
+                        "Proyecto": nombre_p,
+                        "Cliente": cliente_p,
+                        "Estado": estado_p,
+                        "Prioridad": prioridad_p,
+                        "Fecha Límite": str(fecha_p)
+                    }])
+                    st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_p], ignore_index=True)
+                    st.success(f"Proyecto '{nombre_p}' registrado con éxito.")
+                    st.rerun()
 
 
 def mostrar_finanzas():
-    st.title("💰 Panel Financiero Dinámico")
-    st.markdown("Los datos de ingresos se calculan de forma **automatizada** a partir de tus facturas.")
+    st.title("💰 Panel Financiero Transparente")
+    st.markdown("Desglose claro de ingresos reales y gastos operativos.")
     
-    total_ingresos = st.session_state.facturas["Total (€)"].sum()
-    total_gastos = st.session_state.gastos["Importe (€)"].sum()
+    total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
+    total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
     beneficio_neto = total_ingresos - total_gastos
     
     col1, col2, col3 = st.columns(3)
-    col1.metric("Ingresos Totales (Facturados)", f"{total_ingresos:,.2f} €")
-    col2.metric("Gastos Totales", f"{total_gastos:,.2f} €", delta_color="inverse")
-    col3.metric("Beneficio Neto", f"{beneficio_neto:,.2f} €")
+    col1.metric("Ingresos Totales (Facturas)", formato_euro(total_ingresos))
+    col2.metric("Gastos Totales Registrados", formato_euro(total_gastos), delta_color="inverse")
+    col3.metric("Beneficio Neto Real", formato_euro(beneficio_neto))
     
     st.divider()
     
-    col_a, col_b = st.columns(2)
+    st.subheader("📊 Comparativa Financiera")
+    df_comparativa = pd.DataFrame({
+        "Concepto": ["Ingresos Facturados", "Gastos Totales", "Beneficio Neto"],
+        "Importe (€)": [total_ingresos, total_gastos, beneficio_neto]
+    }).set_index("Concepto")
+    
+    st.bar_chart(df_comparativa, color="#6366f1")
+    
+    st.divider()
+    
+    col_a, col_b = st.columns(2, gap="large")
     
     with col_a:
-        st.subheader("📥 Desglose de Ingresos (Facturas)")
+        st.subheader("📥 Origen de Ingresos (Facturas)")
+        st.caption("Estos datos provienen directamente del módulo 'Facturación PDF'.")
         st.dataframe(st.session_state.facturas[["Número", "Cliente", "Total (€)", "Fecha"]], use_container_width=True, hide_index=True)
         
     with col_b:
-        st.subheader("📤 Desglose de Gastos")
+        st.subheader("📤 Control de Gastos (Editable)")
+        st.caption("Añade, modifica o elimina partidas de gasto según tus compras.")
         edited_gastos = st.data_editor(st.session_state.gastos, num_rows="dynamic", use_container_width=True, key="editor_gastos")
         st.session_state.gastos = edited_gastos
 
@@ -419,7 +459,7 @@ def mostrar_finanzas():
 # MENÚ LATERAL Y NAVEGACIÓN
 # ==========================================
 with st.sidebar:
-    st.markdown("### 🚀 Agencia OS")
+    st.markdown("### 🚀 Presencia Web Pro")
     st.markdown("**Navegación**")
     
     opcion = st.radio(
