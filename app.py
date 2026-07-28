@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS avanzados para un aspecto SaaS de alto nivel
+# Estilos CSS avanzados para interfaz SaaS moderna
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -25,7 +25,7 @@ st.markdown("""
         background-color: #080b11;
     }
     
-    /* Tarjetas de métricas estilizadas */
+    /* Tarjetas de métricas */
     .metric-card {
         background: linear-gradient(145deg, #131924 0%, #0d121a 100%);
         border: 1px solid #20293a;
@@ -36,7 +36,7 @@ st.markdown("""
     }
     
     .metric-card:hover {
-        border-color: #3b82f6;
+        border-color: #6366f1;
         transform: translateY(-2px);
     }
     
@@ -56,13 +56,30 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
     
-    /* Contenedores con estilo */
-    .custom-container {
-        background-color: #0f172a;
+    /* Tarjetas de Proyectos */
+    .project-card {
+        background: #0f172a;
         border: 1px solid #1e293b;
         border-radius: 16px;
         padding: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Progress bar contenedores */
+    .progress-bg {
+        background: #1e293b;
+        border-radius: 10px;
+        height: 10px;
+        width: 100%;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+    
+    .progress-fill {
+        background: linear-gradient(90deg, #6366f1 0%, #10b981 100%);
+        height: 100%;
+        border-radius: 10px;
     }
     
     /* Badges de estado */
@@ -99,7 +116,7 @@ st.markdown("""
         display: inline-block;
     }
     
-    /* Hero Banner */
+    /* Banner Principal */
     .hero-banner {
         background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #172554 100%);
         border: 1px solid #312e81;
@@ -116,8 +133,8 @@ st.markdown("""
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 0.6rem 1.4rem !important;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
+        padding: 0.5rem 1.2rem !important;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
         transition: all 0.2s ease !important;
     }
     
@@ -126,7 +143,6 @@ st.markdown("""
         transform: translateY(-1px);
     }
     
-    /* Tablas data_editor */
     div[data-testid="stDataFrame"] {
         border: 1px solid #1e293b;
         border-radius: 14px;
@@ -155,7 +171,7 @@ if "tareas_diarias" not in st.session_state:
         {"tarea": "Reunión de valoración con Clínica Estética Aura", "hecha": False}
     ]
 
-# CRM - Prospección Comercial (Antes de cobrar)
+# CRM - Prospección Comercial
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
         {"Prospecto": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Teléfono / Email": "carlos@fitlife.es", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 2500.0, "Próximo Contacto": "2026-08-02"},
@@ -164,7 +180,7 @@ if "leads" not in st.session_state:
         {"Prospecto": "Panadería Gourmet", "Contacto": "Javier López", "Teléfono / Email": "javier@panaderiagourmet.com", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 1500.0, "Próximo Contacto": "2026-08-05"}
     ])
 
-# Proyectos - Producción Operativa (Después de cobrar)
+# Proyectos - Producción Operativa
 if "proyectos" not in st.session_state:
     st.session_state.proyectos = pd.DataFrame([
         {"Proyecto": "Campaña SEO & Google Ads", "Cliente Activo": "Clínica Dental Murcia S.L.", "Fase Trabajo": "En Desarrollo", "Progreso (%)": 65, "Fecha Entrega": "2026-08-15", "Responsable": "Ana (SEO)"},
@@ -248,19 +264,29 @@ def mostrar_dashboard():
     
     with col_izq:
         st.subheader("✅ Tareas Clave del Día")
-        st.caption("Gestiona tus prioridades de hoy directamente desde el Dashboard.")
+        st.caption("Gestiona tus prioridades de hoy: marca, añade o elimina tareas.")
         
-        # Rendimiento interactivo de tareas diarias
-        updated_tasks = []
+        # Rendimiento interactivo de tareas con botón de eliminación por fila
+        task_to_remove = None
         for i, t in enumerate(st.session_state.tareas_diarias):
-            checked = st.checkbox(t["tarea"], value=t["hecha"], key=f"dash_task_{i}")
-            updated_tasks.append({"tarea": t["tarea"], "hecha": checked})
-        st.session_state.tareas_diarias = updated_tasks
-        
+            c_check, c_del = st.columns([0.88, 0.12])
+            with c_check:
+                checked = st.checkbox(t["tarea"], value=t["hecha"], key=f"dash_task_{i}")
+                st.session_state.tareas_diarias[i]["hecha"] = checked
+            with c_del:
+                if st.button("❌", key=f"del_t_{i}"):
+                    task_to_remove = i
+                    
+        # Lógica de borrado seguro
+        if task_to_remove is not None:
+            st.session_state.tareas_diarias.pop(task_to_remove)
+            st.rerun()
+            
+        st.write("")
         # Añadir nueva tarea rápida al checklist
-        with st.popover("➕ Añadir tarea rápida"):
-            nueva_t = st.text_input("Nueva tarea para hoy:")
-            if st.button("Guardar tarea"):
+        with st.popover("➕ Añadir Nueva Tarea"):
+            nueva_t = st.text_input("Descripción de la tarea:")
+            if st.button("Guardar en el Checklist"):
                 if nueva_t:
                     st.session_state.tareas_diarias.append({"tarea": nueva_t, "hecha": False})
                     st.rerun()
@@ -339,7 +365,7 @@ def mostrar_crm():
 
 def mostrar_tareas_proyectos():
     st.title("📋 Tareas & Proyectos (Producción)")
-    st.markdown("Módulo operativo para **entregar los trabajos** de los clientes activos.")
+    st.markdown("Módulo operativo visual para **ejecutar y supervisar los trabajos** de clientes activos.")
     
     proyectos_count = len(st.session_state.proyectos)
     
@@ -350,8 +376,38 @@ def mostrar_tareas_proyectos():
     
     st.divider()
     
-    st.subheader("🚀 Seguimiento de Entregables")
+    # VISTA VISUAL DE TARJETAS DE PROYECTOS (NUEVO REDISEÑO)
+    st.subheader("⚡ Vista Visual de Proyectos en Curso")
     
+    cols = st.columns(3)
+    for idx, row in st.session_state.proyectos.iterrows():
+        col_idx = idx % 3
+        with cols[col_idx]:
+            p_html = f"""
+            <div class="project-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h4 style="color: #ffffff; margin: 0; font-size: 15px; font-weight: 700;">{row['Proyecto']}</h4>
+                    <span class="badge-indigo">{row['Fase Trabajo']}</span>
+                </div>
+                <p style="color: #94a3b8; font-size: 12px; margin: 0 0 12px 0;">Cliente: <strong style="color: #e2e8f0;">{row['Cliente Activo']}</strong></p>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #cbd5e1; font-weight: 600;">
+                    <span>Progreso:</span>
+                    <span>{row['Progreso (%)']}%</span>
+                </div>
+                <div class="progress-bg">
+                    <div class="progress-fill" style="width: {row['Progreso (%)']}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin-top: 8px;">
+                    <span>📅 Entrega: {row['Fecha Entrega']}</span>
+                    <span>👤 {row['Responsable']}</span>
+                </div>
+            </div>
+            """
+            render_html_clean(p_html)
+            
+    st.divider()
+    
+    st.subheader("🛠️ Tabla de Gestión Operativa (Editable)")
     edited_proyectos = st.data_editor(
         st.session_state.proyectos,
         num_rows="dynamic",
@@ -472,20 +528,55 @@ def mostrar_facturacion():
 
 def mostrar_finanzas():
     st.title("💰 Panel Financiero Transparente")
-    st.markdown("Visualización de balances y salud financiera en tiempo real.")
+    st.markdown("Análisis avanzado de rentabilidad, margen operativo y balances.")
     
     total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
     total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
     beneficio_neto = total_ingresos - total_gastos
+    margen_pct = (beneficio_neto / total_ingresos * 100) if total_ingresos > 0 else 0.0
     
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Ingresos Totales", formato_euro(total_ingresos))
-    c2.metric("Gastos Totales", formato_euro(total_gastos), delta_color="inverse")
-    c3.metric("Beneficio Neto Real", formato_euro(beneficio_neto))
+    # TARJETAS FINANCIAL REDISEÑADAS
+    c1, c2, c3, c4 = st.columns(4)
+    
+    with c1:
+        render_html_clean(f"""
+        <div class="metric-card">
+            <div class="metric-title">Ingresos Totales</div>
+            <div class="metric-value">{formato_euro(total_ingresos)}</div>
+            <div style="margin-top: 10px;"><span class="badge-emerald">Facturación Real</span></div>
+        </div>
+        """)
+        
+    with c2:
+        render_html_clean(f"""
+        <div class="metric-card">
+            <div class="metric-title">Gastos Totales</div>
+            <div class="metric-value" style="color: #f43f5e;">{formato_euro(total_gastos)}</div>
+            <div style="margin-top: 10px;"><span class="badge-amber">Costes Operativos</span></div>
+        </div>
+        """)
+        
+    with c3:
+        render_html_clean(f"""
+        <div class="metric-card">
+            <div class="metric-title">Beneficio Neto</div>
+            <div class="metric-value" style="color: {'#10b981' if beneficio_neto >= 0 else '#f43f5e'};">{formato_euro(beneficio_neto)}</div>
+            <div style="margin-top: 10px;"><span class="badge-indigo">Resultado Real</span></div>
+        </div>
+        """)
+        
+    with c4:
+        render_html_clean(f"""
+        <div class="metric-card">
+            <div class="metric-title">Margen Neto (%)</div>
+            <div class="metric-value">{margen_pct:.1f}%</div>
+            <div style="margin-top: 10px;"><span class="{ 'badge-emerald' if margen_pct > 20 else 'badge-amber' }">Rentabilidad</span></div>
+        </div>
+        """)
     
     st.divider()
     
-    st.subheader("📊 Comparativa de Balance")
+    st.subheader("📊 Balance General de Resultados")
     df_comparativa = pd.DataFrame({
         "Concepto": ["Ingresos Facturados", "Gastos Totales", "Beneficio Neto"],
         "Importe (€)": [total_ingresos, total_gastos, beneficio_neto]
