@@ -11,8 +11,8 @@ st.markdown("""
     .main { padding: 1.5rem; }
     .stButton>button { width: 100%; border-radius: 8px; font-weight: bold; }
     .invoice-box {
-        background-color: #ffffff;
-        color: #111111;
+        background-color: #ffffff !important;
+        color: #111111 !important;
         padding: 25px;
         border-radius: 10px;
         border: 1px solid #dddddd;
@@ -126,37 +126,33 @@ elif menu == "📄 Facturación PDF":
     with col_preview:
         st.subheader("👁️ Vista Previa de la Factura")
         
-        html_factura = f"""
-        <div class="invoice-box">
-            <h2 style="color: #2b2b2b; margin-bottom: 5px;">MI AGENCIA DIGITAL</h2>
-            <p style="color: #666; font-size: 12px; margin-top: 0;">NIF: B99887766 | info@miagencia.com</p>
-            <hr style="border: 0.5px solid #eee;">
-            <p><strong>Factura Nº:</strong> {num_factura}<br>
-            <strong>Fecha:</strong> {datetime.now().strftime('%d/%m/%Y')}</p>
-            
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin: 15px 0;">
-                <strong>Cliente:</strong> {cliente_nombre}<br>
-                <strong>NIF/CIF:</strong> {cliente_cif}
-            </div>
-            
-            <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
-                <tr style="background-color: #f2f2f2;">
-                    <th style="text-align:left; padding:8px;">Concepto</th>
-                    <th style="text-align:right; padding:8px;">Importe</th>
-                </tr>
-                <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{concepto}</td>
-                    <td style="text-align:right; padding:8px; border-bottom:1px solid #eee;">{base_imponible:.2f} €</td>
-                </tr>
-            </table>
-            
-            <div style="text-align: right; margin-top: 20px;">
-                <p style="margin:2px;">Base Imponible: <strong>{base_imponible:.2f} €</strong></p>
-                <p style="margin:2px;">IVA ({tipo_iva}%): <strong>{cuota_iva:.2f} €</strong></p>
-                <h3 style="color: #111; margin-top: 5px;">Total: {total_factura:.2f} €</h3>
-            </div>
-        </div>
-        """
+        # HTML alineado al borde sin espacios iniciales para evitar el formato código de Markdown
+        html_factura = f"""<div class="invoice-box">
+<h2 style="color: #2b2b2b; margin-bottom: 5px;">MI AGENCIA DIGITAL</h2>
+<p style="color: #666; font-size: 12px; margin-top: 0;">NIF: B99887766 | info@miagencia.com</p>
+<hr style="border: 0.5px solid #eee;">
+<p><strong>Factura Nº:</strong> {num_factura}<br>
+<strong>Fecha:</strong> {datetime.now().strftime('%d/%m/%Y')}</p>
+<div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin: 15px 0; color: #111;">
+<strong>Cliente:</strong> {cliente_nombre}<br>
+<strong>NIF/CIF:</strong> {cliente_cif}
+</div>
+<table style="width:100%; border-collapse: collapse; margin-top: 15px; color: #111;">
+<tr style="background-color: #f2f2f2;">
+<th style="text-align:left; padding:8px;">Concepto</th>
+<th style="text-align:right; padding:8px;">Importe</th>
+</tr>
+<tr>
+<td style="padding:8px; border-bottom:1px solid #eee;">{concepto}</td>
+<td style="text-align:right; padding:8px; border-bottom:1px solid #eee;">{base_imponible:.2f} €</td>
+</tr>
+</table>
+<div style="text-align: right; margin-top: 20px; color: #111;">
+<p style="margin:2px;">Base Imponible: <strong>{base_imponible:.2f} €</strong></p>
+<p style="margin:2px;">IVA ({tipo_iva}%): <strong>{cuota_iva:.2f} €</strong></p>
+<h3 style="color: #111; margin-top: 5px;">Total: {total_factura:.2f} €</h3>
+</div>
+</div>"""
         
         st.markdown(html_factura, unsafe_allow_html=True)
         st.caption("💡 Para guardar en PDF: Pulsa Ctrl + P (o Cmd + P en Mac) y elige 'Guardar como PDF'.")
