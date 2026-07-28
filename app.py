@@ -110,34 +110,32 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Función auxiliar para renderizar HTML limpio
 def render_html_clean(html_text):
     clean_text = "\n".join([line.strip() for line in html_text.split("\n")])
     st.markdown(clean_text, unsafe_allow_html=True)
 
-# Formateador de moneda en español
 def formato_euro(valor):
     return f"{valor:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
 
 # ==========================================
-# INICIALIZACIÓN DE DATOS (PERSISTENCIA)
+# INICIALIZACIÓN DE DATOS DIFERENCIADOS
 # ==========================================
+
+# 1. CRM: Datos puros de captación comercial
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
-        {"Cliente": "Clínica Dental Murcia S.L.", "Contacto": "Dr. Antonio", "Fase": "Cierre Ganado", "Valor (€)": 605.0, "Prioridad": "Alta 🔴"},
-        {"Cliente": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Fase": "Propuesta Enviada", "Valor (€)": 2500.0, "Prioridad": "Alta 🔴"},
-        {"Cliente": "Hotel Costa Azul", "Contacto": "Elena Soria", "Fase": "Contacto Inicial", "Valor (€)": 1200.0, "Prioridad": "Media 🟡"},
-        {"Cliente": "Clínica Estética Aura", "Contacto": "Dr. Roberto Ruiz", "Fase": "Negociación", "Valor (€)": 4800.0, "Prioridad": "Alta 🔴"},
-        {"Cliente": "Panadería Gourmet", "Contacto": "Javier López", "Fase": "Propuesta Enviada", "Valor (€)": 1500.0, "Prioridad": "Media 🟡"}
+        {"Prospecto": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Teléfono / Email": "carlos@fitlife.es", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 2500.0, "Próximo Contacto": "2026-08-02"},
+        {"Prospecto": "Hotel Costa Azul", "Contacto": "Elena Soria", "Teléfono / Email": "info@hotelcosta.com", "Etapa Comercial": "Llamada Inicial", "Valor Cotizado (€)": 1200.0, "Próximo Contacto": "2026-08-01"},
+        {"Prospecto": "Clínica Estética Aura", "Contacto": "Dr. Roberto", "Teléfono / Email": "roberto@esteticaaura.com", "Etapa Comercial": "Negociación", "Valor Cotizado (€)": 4800.0, "Próximo Contacto": "2026-07-30"},
+        {"Prospecto": "Panadería Gourmet", "Contacto": "Javier López", "Teléfono / Email": "javier@panaderiagourmet.com", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 1500.0, "Próximo Contacto": "2026-08-05"}
     ])
 
+# 2. PROYECTOS: Datos de ejecución operativa para clientes ganados
 if "proyectos" not in st.session_state:
     st.session_state.proyectos = pd.DataFrame([
-        {"Proyecto": "Posicionamiento SEO & Campañas", "Cliente": "Clínica Dental Murcia S.L.", "Estado": "En Progreso", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-15"},
-        {"Proyecto": "Rediseño Web Corporativo", "Cliente": "Gimnasio FitLife", "Estado": "Pendiente", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-20"},
-        {"Proyecto": "Estrategia Local Google Maps", "Cliente": "Hotel Costa Azul", "Estado": "Pendiente", "Prioridad": "Media 🟡", "Fecha Límite": "2026-08-30"},
-        {"Proyecto": "Landing Page Captación", "Cliente": "Clínica Estética Aura", "Estado": "En Revisión", "Prioridad": "Alta 🔴", "Fecha Límite": "2026-08-10"},
-        {"Proyecto": "Branding & Redes Sociales", "Cliente": "Panadería Gourmet", "Estado": "En Progreso", "Prioridad": "Media 🟡", "Fecha Límite": "2026-09-05"}
+        {"Proyecto": "Campaña SEO & Google Ads", "Cliente Activo": "Clínica Dental Murcia S.L.", "Fase Trabajo": "En Desarrollo", "Progreso (%)": 65, "Fecha Entrega": "2026-08-15", "Responsable": "Ana (SEO)"},
+        {"Proyecto": "Rediseño Web e-Commerce", "Cliente Activo": "Tech Solutions S.L.", "Fase Trabajo": "Diseño Figma", "Progreso (%)": 30, "Fecha Entrega": "2026-08-28", "Responsable": "David (Dev)"},
+        {"Proyecto": "Auditoría de Conversión", "Cliente Activo": "Restaurante El Faro", "Fase Trabajo": "En Revisión", "Progreso (%)": 90, "Fecha Entrega": "2026-08-05", "Responsable": "Ana (SEO)"}
     ])
 
 if "facturas" not in st.session_state:
@@ -159,8 +157,8 @@ if "gastos" not in st.session_state:
 def mostrar_dashboard():
     html_banner = """
     <div class="hero-banner">
-        <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro — Control General</h1>
-        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Panel consolidado con métricas operativas, comerciales y financieras en tiempo real.</p>
+        <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro — Panel Global</h1>
+        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Supervisión global de ventas, producción operativa y salud financiera.</p>
     </div>
     """
     render_html_clean(html_banner)
@@ -168,16 +166,16 @@ def mostrar_dashboard():
     total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
     total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
     beneficio = total_ingresos - total_gastos
-    valor_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0.0
+    valor_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         render_html_clean(f"""
         <div class="dash-card">
-            <div class="dash-card-title">Facturación Emitida</div>
+            <div class="dash-card-title">Facturación Cobrada</div>
             <div class="dash-card-value">{formato_euro(total_ingresos)}</div>
-            <span class="badge-success">Ingresos Reales</span>
+            <span class="badge-success">Facturas Emitidas</span>
         </div>
         """)
         
@@ -186,25 +184,25 @@ def mostrar_dashboard():
         <div class="dash-card">
             <div class="dash-card-title">Beneficio Neto</div>
             <div class="dash-card-value" style="color: {'#10b981' if beneficio >= 0 else '#ef4444'};">{formato_euro(beneficio)}</div>
-            <span class="badge-indigo">Ingresos - Gastos</span>
+            <span class="badge-indigo">Margen Disponible</span>
         </div>
         """)
         
     with c3:
         render_html_clean(f"""
         <div class="dash-card">
-            <div class="dash-card-title">Pipeline Comercial</div>
+            <div class="dash-card-title">Propuestas en Venta</div>
             <div class="dash-card-value">{formato_euro(valor_pipeline)}</div>
-            <span class="badge-warning">{len(st.session_state.leads)} Prospects</span>
+            <span class="badge-warning">{len(st.session_state.leads)} Prospects CRM</span>
         </div>
         """)
         
     with c4:
         render_html_clean(f"""
         <div class="dash-card">
-            <div class="dash-card-title">Proyectos en Curso</div>
+            <div class="dash-card-title">Proyectos en Producción</div>
             <div class="dash-card-value">{len(st.session_state.proyectos)}</div>
-            <span class="badge-indigo">Sincronizados</span>
+            <span class="badge-indigo">Clientes en Desarrollo</span>
         </div>
         """)
     
@@ -212,7 +210,7 @@ def mostrar_dashboard():
     col_izq, col_der = st.columns([1.8, 1.2], gap="large")
     
     with col_izq:
-        st.subheader("📈 Resumen de Crecimiento")
+        st.subheader("📈 Rendimiento Financiero")
         df_tendencia = pd.DataFrame({
             "Mes": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul"],
             "Ingresos (€)": [4200, 5100, 4800, 6200, 5900, 7100, total_ingresos],
@@ -221,23 +219,18 @@ def mostrar_dashboard():
         st.area_chart(df_tendencia, color=["#6366f1", "#ef4444"])
         
     with col_der:
-        st.subheader("🔔 Feed de Operaciones")
+        st.subheader("🔔 Estado Operativo vs Comercial")
         feed_html = f"""
         <div style="background: #161b26; border: 1px solid #232a3b; border-radius: 14px; padding: 18px;">
             <div style="margin-bottom: 16px; border-bottom: 1px solid #232a3b; padding-bottom: 12px;">
-                <span class="badge-success">Facturación</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Última factura cobrada</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">Clínica Dental Murcia S.L. • {formato_euro(total_ingresos)}</p>
-            </div>
-            <div style="margin-bottom: 16px; border-bottom: 1px solid #232a3b; padding-bottom: 12px;">
-                <span class="badge-warning">CRM</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Valor Total Oportunidades</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">{formato_euro(valor_pipeline)} en negociación</p>
+                <span class="badge-warning">Ventas (CRM)</span>
+                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Pipeline Activo</p>
+                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.leads)} cotizaciones por {formato_euro(valor_pipeline)}</p>
             </div>
             <div>
-                <span class="badge-indigo">Proyectos</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Carga Operativa</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.proyectos)} clientes activos en desarrollo</p>
+                <span class="badge-indigo">Producción (Proyectos)</span>
+                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Carga de Trabajo</p>
+                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.proyectos)} proyectos activos en entrega</p>
             </div>
         </div>
         """
@@ -246,20 +239,19 @@ def mostrar_dashboard():
 
 def mostrar_crm():
     st.title("🎯 CRM & Prospección Comercial")
-    st.markdown("Edita las celdas directamente o utiliza las herramientas rápidas de alta y baja.")
+    st.markdown("Módulo enfocado exclusivamente en **conseguir nuevos clientes** y hacer seguimiento de cotizaciones.")
     
-    total_pipeline = st.session_state.leads["Valor (€)"].sum() if not st.session_state.leads.empty else 0.0
+    total_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     leads_count = len(st.session_state.leads)
     
     c1, c2, c3 = st.columns(3)
-    c1.metric("Oportunidades Totales", f"{leads_count}")
-    c2.metric("Valor del Pipeline", formato_euro(total_pipeline))
-    c3.metric("Promedio por Lead", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
+    c1.metric("Leads en Negociación", f"{leads_count}")
+    c2.metric("Valor Total Ofertas", formato_euro(total_pipeline))
+    c3.metric("Ticket Medio Oportunidad", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
     
     st.divider()
     
-    st.subheader("📋 Tabla de Leads y Estado Comercial")
-    st.caption("💡 Para borrar desde la tabla: Marca el checkbox de la izquierda del cliente y pulsa la papelera (o tecla 'Supr').")
+    st.subheader("📞 Embudo Comercial de Ventas")
     
     edited_leads = st.data_editor(
         st.session_state.leads,
@@ -271,41 +263,117 @@ def mostrar_crm():
     
     st.divider()
     
-    # Herramientas de Gestión (Añadir / Eliminar Rápido)
     col_add, col_del = st.columns(2, gap="large")
     
     with col_add:
-        with st.expander("➕ Añadir Nuevo Lead Rápidamente"):
+        with st.expander("➕ Registrar Nueva Oportunidad de Venta"):
             with st.form("form_nuevo_lead", clear_on_submit=True):
-                cliente = st.text_input("Nombre de la Empresa / Cliente")
+                prospecto = st.text_input("Empresa / Prospecto")
                 contacto = st.text_input("Persona de Contacto")
-                fase = st.selectbox("Fase Inicial", ["Contacto Inicial", "Propuesta Enviada", "Negociación", "Cierre Ganado"])
-                valor = st.number_input("Valor Estimado (€)", value=1000.0, step=100.0)
-                prioridad = st.selectbox("Prioridad", ["Alta 🔴", "Media 🟡", "Baja 🟢"])
+                email = st.text_input("Email / Teléfono")
+                etapa = st.selectbox("Etapa Comercial", ["Contacto Inicial", "Reunión Agendada", "Propuesta Enviada", "Negociación", "Cerrado Ganado", "Cerrado Perdido"])
+                valor = st.number_input("Valor Cotizado (€)", value=1500.0, step=100.0)
+                fecha_c = st.date_input("Fecha Próximo Seguimiento")
                 
-                if st.form_submit_button("Guardar en el CRM"):
-                    if cliente:
-                        nuevo_registro = pd.DataFrame([{
-                            "Cliente": cliente,
+                if st.form_submit_button("Guardar en CRM"):
+                    if prospecto:
+                        nuevo_r = pd.DataFrame([{
+                            "Prospecto": prospecto,
                             "Contacto": contacto,
-                            "Fase": fase,
-                            "Valor (€)": valor,
-                            "Prioridad": prioridad
+                            "Teléfono / Email": email,
+                            "Etapa Comercial": etapa,
+                            "Valor Cotizado (€)": valor,
+                            "Próximo Contacto": str(fecha_c)
                         }])
-                        st.session_state.leads = pd.concat([st.session_state.leads, nuevo_registro], ignore_index=True)
-                        st.success(f"¡Lead '{cliente}' añadido!")
+                        st.session_state.leads = pd.concat([st.session_state.leads, nuevo_r], ignore_index=True)
+                        st.success(f"Prospecto '{prospecto}' registrado.")
                         st.rerun()
 
     with col_del:
-        with st.expander("🗑️ Borrado Rápido de Lead"):
+        with st.expander("🗑️ Borrado Rápido de Prospecto"):
             if not st.session_state.leads.empty:
-                lead_a_borrar = st.selectbox("Selecciona el cliente a eliminar:", st.session_state.leads["Cliente"].unique(), key="select_del_lead")
-                if st.button("❌ Eliminar Lead Seleccionado", key="btn_del_lead"):
-                    st.session_state.leads = st.session_state.leads[st.session_state.leads["Cliente"] != lead_a_borrar].reset_index(drop=True)
-                    st.success(f"Lead '{lead_a_borrar}' eliminado.")
+                lead_a_borrar = st.selectbox("Selecciona prospecto a eliminar:", st.session_state.leads["Prospecto"].unique(), key="del_lead_select")
+                if st.button("❌ Eliminar Prospecto", key="btn_del_lead_act"):
+                    st.session_state.leads = st.session_state.leads[st.session_state.leads["Prospecto"] != lead_a_borrar].reset_index(drop=True)
+                    st.success(f"'{lead_a_borrar}' eliminado del CRM.")
                     st.rerun()
-            else:
-                st.info("No hay leads para eliminar.")
+
+
+def mostrar_tareas_proyectos():
+    st.title("📋 Tareas & Proyectos (Producción)")
+    st.markdown("Módulo enfocado exclusivamente en **ejecutar los trabajos** de clientes activos.")
+    
+    proyectos_count = len(st.session_state.proyectos)
+    
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Proyectos Activos", f"{proyectos_count}")
+    col2.metric("En Desarrollo", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Desarrollo'])}")
+    col3.metric("Listos para Revisión", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Revisión'])}")
+    
+    st.divider()
+    
+    st.subheader("🚀 Proyectos en Desarrollo para Clientes")
+    st.caption("💡 Ajusta el % de avance, la fase de trabajo o la fecha de entrega en la tabla.")
+    
+    edited_proyectos = st.data_editor(
+        st.session_state.proyectos,
+        num_rows="dynamic",
+        use_container_width=True,
+        key="editor_proyectos"
+    )
+    st.session_state.proyectos = edited_proyectos
+    
+    st.divider()
+    
+    # Checklist Operativo Diario
+    st.subheader("✅ Tareas Clave del Día")
+    col_t1, col_t2 = st.columns(2)
+    
+    with col_t1:
+        st.checkbox("Revisar textos de la Landing Page de Clínica Dental Murcia", value=True)
+        st.checkbox("Subir cambios de diseño a Figma para Tech Solutions")
+        st.checkbox("Configurar píxel de conversión en Google Ads")
+        
+    with col_t2:
+        st.checkbox("Enviar borrador de auditoría a Restaurante El Faro")
+        st.checkbox("Optimización de velocidad WPO en entorno de prueba")
+    
+    st.divider()
+    
+    col_add_p, col_del_p = st.columns(2, gap="large")
+    
+    with col_add_p:
+        with st.expander("➕ Alta de Nuevo Proyecto"):
+            with st.form("form_nuevo_proy", clear_on_submit=True):
+                nombre_p = st.text_input("Nombre del Servicio / Proyecto")
+                cliente_p = st.text_input("Cliente Activo (Cobrado)")
+                fase_p = st.selectbox("Fase de Trabajo", ["Planificación", "Diseño Figma", "En Desarrollo", "En Revisión", "Entregado"])
+                progreso_p = st.slider("Avance Inicial (%)", 0, 100, 10)
+                fecha_p = st.date_input("Fecha de Entrega Prometida")
+                resp_p = st.text_input("Responsable Asignado", "Equipo Web")
+                
+                if st.form_submit_button("Crear Proyecto"):
+                    if nombre_p:
+                        nuevo_p = pd.DataFrame([{
+                            "Proyecto": nombre_p,
+                            "Cliente Activo": cliente_p,
+                            "Fase Trabajo": fase_p,
+                            "Progreso (%)": progreso_p,
+                            "Fecha Entrega": str(fecha_p),
+                            "Responsable": resp_p
+                        }])
+                        st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_p], ignore_index=True)
+                        st.success(f"Proyecto '{nombre_p}' dado de alta.")
+                        st.rerun()
+
+    with col_del_p:
+        with st.expander("🗑️ Borrado Rápido de Proyecto"):
+            if not st.session_state.proyectos.empty:
+                proy_a_borrar = st.selectbox("Selecciona proyecto a eliminar:", st.session_state.proyectos["Proyecto"].unique(), key="select_del_p_act")
+                if st.button("❌ Eliminar Proyecto", key="btn_del_p_act"):
+                    st.session_state.proyectos = st.session_state.proyectos[st.session_state.proyectos["Proyecto"] != proy_a_borrar].reset_index(drop=True)
+                    st.success(f"Proyecto '{proy_a_borrar}' eliminado.")
+                    st.rerun()
 
 
 def mostrar_facturacion():
@@ -339,7 +407,7 @@ def mostrar_facturacion():
                 "Total (€)": total
             }])
             st.session_state.facturas = pd.concat([st.session_state.facturas, nueva_factura], ignore_index=True)
-            st.success(f"Factura {num_factura} registrada. ¡Añadida automáticamente a tus Finanzas!")
+            st.success(f"Factura {num_factura} registrada. ¡Sumada automáticamente a tus Finanzas!")
 
     with col2:
         st.subheader("👁️ Vista Previa del Documento")
@@ -380,69 +448,9 @@ def mostrar_facturacion():
         st.caption("💡 Para guardar en PDF: Pulsa Ctrl + P (o Cmd + P en Mac) y selecciona 'Guardar como PDF'.")
 
 
-def mostrar_tareas_proyectos():
-    st.title("📋 Tareas & Proyectos")
-    st.markdown("Gestión interactiva de proyectos operativos.")
-    
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Proyectos Totales", f"{len(st.session_state.proyectos)}")
-    col2.metric("En Progreso", f"{len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Progreso'])}")
-    col3.metric("Pendientes", f"{len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Pendiente'])}")
-    
-    st.divider()
-    
-    st.subheader("🛠️ Control Operativo de Proyectos")
-    st.caption("💡 Haz doble clic en las celdas para modificar datos, o usa los paneles de abajo para añadir/borrar.")
-    
-    edited_proyectos = st.data_editor(
-        st.session_state.proyectos,
-        num_rows="dynamic",
-        use_container_width=True,
-        key="editor_proyectos"
-    )
-    st.session_state.proyectos = edited_proyectos
-    
-    st.divider()
-    
-    col_add_p, col_del_p = st.columns(2, gap="large")
-    
-    with col_add_p:
-        with st.expander("➕ Crear Nuevo Proyecto"):
-            with st.form("form_nuevo_proyecto", clear_on_submit=True):
-                nombre_p = st.text_input("Nombre del Proyecto")
-                cliente_p = st.text_input("Cliente Asignado")
-                estado_p = st.selectbox("Estado", ["Pendiente", "En Progreso", "En Revisión", "Completado"])
-                prioridad_p = st.selectbox("Prioridad", ["Alta 🔴", "Media 🟡", "Baja 🟢"])
-                fecha_p = st.date_input("Fecha Límite")
-                
-                if st.form_submit_button("Guardar Proyecto"):
-                    if nombre_p:
-                        nuevo_p = pd.DataFrame([{
-                            "Proyecto": nombre_p,
-                            "Cliente": cliente_p,
-                            "Estado": estado_p,
-                            "Prioridad": prioridad_p,
-                            "Fecha Límite": str(fecha_p)
-                        }])
-                        st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_p], ignore_index=True)
-                        st.success(f"Proyecto '{nombre_p}' creado.")
-                        st.rerun()
-
-    with col_del_p:
-        with st.expander("🗑️ Borrado Rápido de Proyecto"):
-            if not st.session_state.proyectos.empty:
-                proy_a_borrar = st.selectbox("Selecciona el proyecto a eliminar:", st.session_state.proyectos["Proyecto"].unique(), key="select_del_proy")
-                if st.button("❌ Eliminar Proyecto Seleccionado", key="btn_del_proy"):
-                    st.session_state.proyectos = st.session_state.proyectos[st.session_state.proyectos["Proyecto"] != proy_a_borrar].reset_index(drop=True)
-                    st.success(f"Proyecto '{proy_a_borrar}' eliminado.")
-                    st.rerun()
-            else:
-                st.info("No hay proyectos para eliminar.")
-
-
 def mostrar_finanzas():
     st.title("💰 Panel Financiero Transparente")
-    st.markdown("Desglose claro de ingresos reales y gastos operativos.")
+    st.markdown("Cálculo automatizado de ingresos y gastos reales.")
     
     total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
     total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
@@ -468,20 +476,18 @@ def mostrar_finanzas():
     col_a, col_b = st.columns(2, gap="large")
     
     with col_a:
-        st.subheader("📥 Origen de Ingresos (Facturas)")
-        st.caption("Datos procedentes de 'Facturación PDF'.")
+        st.subheader("📥 Facturación Emitida")
         st.dataframe(st.session_state.facturas[["Número", "Cliente", "Total (€)", "Fecha"]], use_container_width=True, hide_index=True)
         
     with col_b:
         st.subheader("📤 Control de Gastos")
-        st.caption("Añade, edita o elimina partidas de gasto.")
         edited_gastos = st.data_editor(st.session_state.gastos, num_rows="dynamic", use_container_width=True, key="editor_gastos")
         st.session_state.gastos = edited_gastos
         
         with st.expander("🗑️ Borrado Rápido de Gasto"):
             if not st.session_state.gastos.empty:
-                gasto_a_borrar = st.selectbox("Selecciona el concepto a eliminar:", st.session_state.gastos["Concepto"].unique(), key="select_del_gasto")
-                if st.button("❌ Eliminar Gasto Seleccionado", key="btn_del_gasto"):
+                gasto_a_borrar = st.selectbox("Selecciona concepto a eliminar:", st.session_state.gastos["Concepto"].unique(), key="select_del_gasto")
+                if st.button("❌ Eliminar Gasto", key="btn_del_gasto"):
                     st.session_state.gastos = st.session_state.gastos[st.session_state.gastos["Concepto"] != gasto_a_borrar].reset_index(drop=True)
                     st.success(f"Gasto '{gasto_a_borrar}' eliminado.")
                     st.rerun()
