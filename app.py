@@ -6,13 +6,13 @@ from datetime import date
 # CONFIGURACIÓN DE PÁGINA Y CSS PREMIUM
 # ==========================================
 st.set_page_config(
-    page_title="Presencia Web Pro - Agencia OS",
-    page_icon="🚀",
+    page_title="Presencia Web Pro - OS",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS avanzados para interfaz SaaS moderna
+# Estilos CSS avanzados para un aspecto SaaS de alto nivel
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -22,89 +22,114 @@ st.markdown("""
     }
     
     .stApp {
-        background-color: #0b0f17;
+        background-color: #080b11;
     }
     
-    /* Tarjetas de métricas */
-    .dash-card {
-        background: linear-gradient(135deg, #161b26 0%, #11141d 100%);
-        border: 1px solid #232a3b;
+    /* Tarjetas de métricas estilizadas */
+    .metric-card {
+        background: linear-gradient(145deg, #131924 0%, #0d121a 100%);
+        border: 1px solid #20293a;
         border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.4);
-        margin-bottom: 15px;
+        padding: 22px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        transition: transform 0.2s ease, border-color 0.2s ease;
     }
     
-    .dash-card-title {
+    .metric-card:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+    }
+    
+    .metric-title {
         color: #94a3b8;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 12px;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
         margin-bottom: 8px;
     }
     
-    .dash-card-value {
-        color: #ffffff;
-        font-size: 26px;
+    .metric-value {
+        color: #f8fafc;
+        font-size: 28px;
         font-weight: 800;
-        margin-bottom: 4px;
+        letter-spacing: -0.5px;
     }
     
-    /* Etiquetas / Badges */
-    .badge-success {
-        background-color: rgba(16, 185, 129, 0.15);
+    /* Contenedores con estilo */
+    .custom-container {
+        background-color: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    /* Badges de estado */
+    .badge-emerald {
+        background: rgba(16, 185, 129, 0.12);
         color: #10b981;
-        padding: 4px 10px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 700;
         display: inline-block;
     }
     
     .badge-indigo {
-        background-color: rgba(99, 102, 241, 0.15);
+        background: rgba(99, 102, 241, 0.12);
         color: #818cf8;
-        padding: 4px 10px;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 700;
         display: inline-block;
     }
 
-    .badge-warning {
-        background-color: rgba(245, 158, 11, 0.15);
+    .badge-amber {
+        background: rgba(245, 158, 11, 0.12);
         color: #f59e0b;
-        padding: 4px 10px;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 700;
         display: inline-block;
     }
     
     /* Hero Banner */
     .hero-banner {
-        background: linear-gradient(90deg, #1e1b4b 0%, #31104b 50%, #0f172a 100%);
-        border: 1px solid #3730a3;
-        border-radius: 18px;
-        padding: 24px;
+        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #172554 100%);
+        border: 1px solid #312e81;
+        border-radius: 20px;
+        padding: 26px 30px;
         margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
     
-    /* Botones principales */
+    /* Botones primarios */
     .stButton>button {
-        border-radius: 10px !important;
-        font-weight: 600 !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
-        color: white !important;
+        color: #ffffff !important;
         border: none !important;
-        padding: 0.5rem 1.2rem !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3) !important;
+        padding: 0.6rem 1.4rem !important;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
+        transition: all 0.2s ease !important;
     }
     
+    .stButton>button:hover {
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
+        transform: translateY(-1px);
+    }
+    
+    /* Tablas data_editor */
     div[data-testid="stDataFrame"] {
-        border: 1px solid #232a3b;
-        border-radius: 12px;
+        border: 1px solid #1e293b;
+        border-radius: 14px;
         overflow: hidden;
     }
 </style>
@@ -118,10 +143,19 @@ def formato_euro(valor):
     return f"{valor:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
 
 # ==========================================
-# INICIALIZACIÓN DE DATOS DIFERENCIADOS
+# INICIALIZACIÓN DE DATOS (PERSISTENCIA)
 # ==========================================
 
-# 1. CRM: Datos puros de captación comercial
+# Tareas diarias del Dashboard
+if "tareas_diarias" not in st.session_state:
+    st.session_state.tareas_diarias = [
+        {"tarea": "Llamar a Gimnasio FitLife para revisar propuesta", "hecha": False},
+        {"tarea": "Revisar entregable SEO de Clínica Dental Murcia", "hecha": True},
+        {"tarea": "Enviar factura FACT-2026-002 al cliente", "hecha": False},
+        {"tarea": "Reunión de valoración con Clínica Estética Aura", "hecha": False}
+    ]
+
+# CRM - Prospección Comercial (Antes de cobrar)
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
         {"Prospecto": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Teléfono / Email": "carlos@fitlife.es", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 2500.0, "Próximo Contacto": "2026-08-02"},
@@ -130,7 +164,7 @@ if "leads" not in st.session_state:
         {"Prospecto": "Panadería Gourmet", "Contacto": "Javier López", "Teléfono / Email": "javier@panaderiagourmet.com", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 1500.0, "Próximo Contacto": "2026-08-05"}
     ])
 
-# 2. PROYECTOS: Datos de ejecución operativa para clientes ganados
+# Proyectos - Producción Operativa (Después de cobrar)
 if "proyectos" not in st.session_state:
     st.session_state.proyectos = pd.DataFrame([
         {"Proyecto": "Campaña SEO & Google Ads", "Cliente Activo": "Clínica Dental Murcia S.L.", "Fase Trabajo": "En Desarrollo", "Progreso (%)": 65, "Fecha Entrega": "2026-08-15", "Responsable": "Ana (SEO)"},
@@ -157,8 +191,8 @@ if "gastos" not in st.session_state:
 def mostrar_dashboard():
     html_banner = """
     <div class="hero-banner">
-        <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro — Panel Global</h1>
-        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Supervisión global de ventas, producción operativa y salud financiera.</p>
+        <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro</h1>
+        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Centro de mando operativo, comercial y financiero.</p>
     </div>
     """
     render_html_clean(html_banner)
@@ -168,78 +202,82 @@ def mostrar_dashboard():
     beneficio = total_ingresos - total_gastos
     valor_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     
+    # KPIs visuales
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         render_html_clean(f"""
-        <div class="dash-card">
-            <div class="dash-card-title">Facturación Cobrada</div>
-            <div class="dash-card-value">{formato_euro(total_ingresos)}</div>
-            <span class="badge-success">Facturas Emitidas</span>
+        <div class="metric-card">
+            <div class="metric-title">Facturación Cobrada</div>
+            <div class="metric-value">{formato_euro(total_ingresos)}</div>
+            <div style="margin-top: 10px;"><span class="badge-emerald">Facturas Emitidas</span></div>
         </div>
         """)
         
     with c2:
         render_html_clean(f"""
-        <div class="dash-card">
-            <div class="dash-card-title">Beneficio Neto</div>
-            <div class="dash-card-value" style="color: {'#10b981' if beneficio >= 0 else '#ef4444'};">{formato_euro(beneficio)}</div>
-            <span class="badge-indigo">Margen Disponible</span>
+        <div class="metric-card">
+            <div class="metric-title">Beneficio Neto</div>
+            <div class="metric-value" style="color: {'#10b981' if beneficio >= 0 else '#f43f5e'};">{formato_euro(beneficio)}</div>
+            <div style="margin-top: 10px;"><span class="badge-indigo">Margen Real</span></div>
         </div>
         """)
         
     with c3:
         render_html_clean(f"""
-        <div class="dash-card">
-            <div class="dash-card-title">Propuestas en Venta</div>
-            <div class="dash-card-value">{formato_euro(valor_pipeline)}</div>
-            <span class="badge-warning">{len(st.session_state.leads)} Prospects CRM</span>
+        <div class="metric-card">
+            <div class="metric-title">Pipeline Ventas</div>
+            <div class="metric-value">{formato_euro(valor_pipeline)}</div>
+            <div style="margin-top: 10px;"><span class="badge-amber">{len(st.session_state.leads)} Prospects</span></div>
         </div>
         """)
         
     with c4:
         render_html_clean(f"""
-        <div class="dash-card">
-            <div class="dash-card-title">Proyectos en Producción</div>
-            <div class="dash-card-value">{len(st.session_state.proyectos)}</div>
-            <span class="badge-indigo">Clientes en Desarrollo</span>
+        <div class="metric-card">
+            <div class="metric-title">Proyectos Activos</div>
+            <div class="metric-value">{len(st.session_state.proyectos)}</div>
+            <div style="margin-top: 10px;"><span class="badge-indigo">En Producción</span></div>
         </div>
         """)
     
     st.write("")
-    col_izq, col_der = st.columns([1.8, 1.2], gap="large")
+    
+    # Grid principal: Checklist de Tareas + Gráfica de Rendimiento
+    col_izq, col_der = st.columns([1.3, 1.7], gap="large")
     
     with col_izq:
+        st.subheader("✅ Tareas Clave del Día")
+        st.caption("Gestiona tus prioridades de hoy directamente desde el Dashboard.")
+        
+        # Rendimiento interactivo de tareas diarias
+        updated_tasks = []
+        for i, t in enumerate(st.session_state.tareas_diarias):
+            checked = st.checkbox(t["tarea"], value=t["hecha"], key=f"dash_task_{i}")
+            updated_tasks.append({"tarea": t["tarea"], "hecha": checked})
+        st.session_state.tareas_diarias = updated_tasks
+        
+        # Añadir nueva tarea rápida al checklist
+        with st.popover("➕ Añadir tarea rápida"):
+            nueva_t = st.text_input("Nueva tarea para hoy:")
+            if st.button("Guardar tarea"):
+                if nueva_t:
+                    st.session_state.tareas_diarias.append({"tarea": nueva_t, "hecha": False})
+                    st.rerun()
+
+    with col_der:
         st.subheader("📈 Rendimiento Financiero")
         df_tendencia = pd.DataFrame({
             "Mes": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul"],
             "Ingresos (€)": [4200, 5100, 4800, 6200, 5900, 7100, total_ingresos],
             "Gastos (€)": [2100, 2300, 2400, 2900, 2700, 3100, total_gastos]
         }).set_index("Mes")
-        st.area_chart(df_tendencia, color=["#6366f1", "#ef4444"])
-        
-    with col_der:
-        st.subheader("🔔 Estado Operativo vs Comercial")
-        feed_html = f"""
-        <div style="background: #161b26; border: 1px solid #232a3b; border-radius: 14px; padding: 18px;">
-            <div style="margin-bottom: 16px; border-bottom: 1px solid #232a3b; padding-bottom: 12px;">
-                <span class="badge-warning">Ventas (CRM)</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Pipeline Activo</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.leads)} cotizaciones por {formato_euro(valor_pipeline)}</p>
-            </div>
-            <div>
-                <span class="badge-indigo">Producción (Proyectos)</span>
-                <p style="color: #e2e8f0; font-size: 13px; font-weight: 600; margin: 6px 0 2px 0;">Carga de Trabajo</p>
-                <p style="color: #64748b; font-size: 12px; margin: 0;">{len(st.session_state.proyectos)} proyectos activos en entrega</p>
-            </div>
-        </div>
-        """
-        render_html_clean(feed_html)
+        st.area_chart(df_tendencia, color=["#6366f1", "#f43f5e"])
 
 
 def mostrar_crm():
     st.title("🎯 CRM & Prospección Comercial")
-    st.markdown("Módulo enfocado exclusivamente en **conseguir nuevos clientes** y hacer seguimiento de cotizaciones.")
+    st.markdown("Gestión de contactos comerciales, seguimiento de ofertas y reuniones de venta.")
     
     total_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     leads_count = len(st.session_state.leads)
@@ -247,11 +285,11 @@ def mostrar_crm():
     c1, c2, c3 = st.columns(3)
     c1.metric("Leads en Negociación", f"{leads_count}")
     c2.metric("Valor Total Ofertas", formato_euro(total_pipeline))
-    c3.metric("Ticket Medio Oportunidad", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
+    c3.metric("Ticket Medio / Oportunidad", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
     
     st.divider()
     
-    st.subheader("📞 Embudo Comercial de Ventas")
+    st.subheader("📞 Embudo Comercial")
     
     edited_leads = st.data_editor(
         st.session_state.leads,
@@ -266,7 +304,7 @@ def mostrar_crm():
     col_add, col_del = st.columns(2, gap="large")
     
     with col_add:
-        with st.expander("➕ Registrar Nueva Oportunidad de Venta"):
+        with st.expander("➕ Registrar Nueva Oportunidad"):
             with st.form("form_nuevo_lead", clear_on_submit=True):
                 prospecto = st.text_input("Empresa / Prospecto")
                 contacto = st.text_input("Persona de Contacto")
@@ -286,7 +324,7 @@ def mostrar_crm():
                             "Próximo Contacto": str(fecha_c)
                         }])
                         st.session_state.leads = pd.concat([st.session_state.leads, nuevo_r], ignore_index=True)
-                        st.success(f"Prospecto '{prospecto}' registrado.")
+                        st.success(f"Prospecto '{prospecto}' guardado.")
                         st.rerun()
 
     with col_del:
@@ -295,25 +333,24 @@ def mostrar_crm():
                 lead_a_borrar = st.selectbox("Selecciona prospecto a eliminar:", st.session_state.leads["Prospecto"].unique(), key="del_lead_select")
                 if st.button("❌ Eliminar Prospecto", key="btn_del_lead_act"):
                     st.session_state.leads = st.session_state.leads[st.session_state.leads["Prospecto"] != lead_a_borrar].reset_index(drop=True)
-                    st.success(f"'{lead_a_borrar}' eliminado del CRM.")
+                    st.success(f"'{lead_a_borrar}' eliminado.")
                     st.rerun()
 
 
 def mostrar_tareas_proyectos():
     st.title("📋 Tareas & Proyectos (Producción)")
-    st.markdown("Módulo enfocado exclusivamente en **ejecutar los trabajos** de clientes activos.")
+    st.markdown("Módulo operativo para **entregar los trabajos** de los clientes activos.")
     
     proyectos_count = len(st.session_state.proyectos)
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Proyectos Activos", f"{proyectos_count}")
-    col2.metric("En Desarrollo", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Desarrollo'])}")
-    col3.metric("Listos para Revisión", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Revisión'])}")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Proyectos Activos", f"{proyectos_count}")
+    c2.metric("En Desarrollo", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Desarrollo'])}")
+    c3.metric("Listos para Revisión", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Revisión'])}")
     
     st.divider()
     
-    st.subheader("🚀 Proyectos en Desarrollo para Clientes")
-    st.caption("💡 Ajusta el % de avance, la fase de trabajo o la fecha de entrega en la tabla.")
+    st.subheader("🚀 Seguimiento de Entregables")
     
     edited_proyectos = st.data_editor(
         st.session_state.proyectos,
@@ -322,21 +359,6 @@ def mostrar_tareas_proyectos():
         key="editor_proyectos"
     )
     st.session_state.proyectos = edited_proyectos
-    
-    st.divider()
-    
-    # Checklist Operativo Diario
-    st.subheader("✅ Tareas Clave del Día")
-    col_t1, col_t2 = st.columns(2)
-    
-    with col_t1:
-        st.checkbox("Revisar textos de la Landing Page de Clínica Dental Murcia", value=True)
-        st.checkbox("Subir cambios de diseño a Figma para Tech Solutions")
-        st.checkbox("Configurar píxel de conversión en Google Ads")
-        
-    with col_t2:
-        st.checkbox("Enviar borrador de auditoría a Restaurante El Faro")
-        st.checkbox("Optimización de velocidad WPO en entorno de prueba")
     
     st.divider()
     
@@ -363,7 +385,7 @@ def mostrar_tareas_proyectos():
                             "Responsable": resp_p
                         }])
                         st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_p], ignore_index=True)
-                        st.success(f"Proyecto '{nombre_p}' dado de alta.")
+                        st.success(f"Proyecto '{nombre_p}' creado.")
                         st.rerun()
 
     with col_del_p:
@@ -407,7 +429,7 @@ def mostrar_facturacion():
                 "Total (€)": total
             }])
             st.session_state.facturas = pd.concat([st.session_state.facturas, nueva_factura], ignore_index=True)
-            st.success(f"Factura {num_factura} registrada. ¡Sumada automáticamente a tus Finanzas!")
+            st.success(f"Factura {num_factura} registrada. ¡Impacta en tus Finanzas!")
 
     with col2:
         st.subheader("👁️ Vista Previa del Documento")
@@ -450,20 +472,20 @@ def mostrar_facturacion():
 
 def mostrar_finanzas():
     st.title("💰 Panel Financiero Transparente")
-    st.markdown("Cálculo automatizado de ingresos y gastos reales.")
+    st.markdown("Visualización de balances y salud financiera en tiempo real.")
     
     total_ingresos = st.session_state.facturas["Total (€)"].sum() if not st.session_state.facturas.empty else 0.0
     total_gastos = st.session_state.gastos["Importe (€)"].sum() if not st.session_state.gastos.empty else 0.0
     beneficio_neto = total_ingresos - total_gastos
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Ingresos Totales (Facturas)", formato_euro(total_ingresos))
-    col2.metric("Gastos Totales Registrados", formato_euro(total_gastos), delta_color="inverse")
-    col3.metric("Beneficio Neto Real", formato_euro(beneficio_neto))
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Ingresos Totales", formato_euro(total_ingresos))
+    c2.metric("Gastos Totales", formato_euro(total_gastos), delta_color="inverse")
+    c3.metric("Beneficio Neto Real", formato_euro(beneficio_neto))
     
     st.divider()
     
-    st.subheader("📊 Comparativa Financiera")
+    st.subheader("📊 Comparativa de Balance")
     df_comparativa = pd.DataFrame({
         "Concepto": ["Ingresos Facturados", "Gastos Totales", "Beneficio Neto"],
         "Importe (€)": [total_ingresos, total_gastos, beneficio_neto]
@@ -476,11 +498,11 @@ def mostrar_finanzas():
     col_a, col_b = st.columns(2, gap="large")
     
     with col_a:
-        st.subheader("📥 Facturación Emitida")
+        st.subheader("📥 Registro de Facturas Emitidas")
         st.dataframe(st.session_state.facturas[["Número", "Cliente", "Total (€)", "Fecha"]], use_container_width=True, hide_index=True)
         
     with col_b:
-        st.subheader("📤 Control de Gastos")
+        st.subheader("📤 Control de Gastos Operativos")
         edited_gastos = st.data_editor(st.session_state.gastos, num_rows="dynamic", use_container_width=True, key="editor_gastos")
         st.session_state.gastos = edited_gastos
         
@@ -496,7 +518,7 @@ def mostrar_finanzas():
 # MENÚ LATERAL Y NAVEGACIÓN
 # ==========================================
 with st.sidebar:
-    st.markdown("### 🚀 Presencia Web Pro")
+    st.markdown("### ⚡ Presencia Web Pro")
     st.markdown("**Navegación**")
     
     opcion = st.radio(
