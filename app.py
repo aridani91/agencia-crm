@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import date
 
 # ==========================================
-# CONFIGURACIÓN DE PÁGINA Y CSS ULTRA-PREMIUM
+# CONFIGURACIÓN DE PÁGINA Y CSS DE BAJO NIVEL
 # ==========================================
 st.set_page_config(
     page_title="Presencia Web Pro — Agency OS",
@@ -12,52 +12,84 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS avanzados con estética Dark SaaS (Glassmorphism + Neon Accents)
+# Inyección de CSS agresivo para sobrescribir componentes nativos de Streamlit
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     
-    /* Reset & Tipografía Global */
+    /* Reset Global */
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
     
     .stApp {
-        background-color: #06090e;
+        background-color: #06090e !important;
         color: #f1f5f9;
     }
     
-    /* Sidebar Estilizada */
+    /* 1. TRANSFORMACIÓN RADICAL DEL SIDEBAR */
     section[data-testid="stSidebar"] {
         background-color: #0b0f17 !important;
         border-right: 1px solid #1e293b !important;
+        padding-top: 1rem;
     }
     
-    /* Banner Principal (Hero) */
-    .hero-banner {
-        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #172554 100%);
-        border: 1px solid #312e81;
-        border-radius: 20px;
-        padding: 28px 32px;
-        margin-bottom: 25px;
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
-        position: relative;
-        overflow: hidden;
+    /* Ocultar círculo de radio nativo */
+    div[data-testid="stRadio"] > div[role="radiogroup"] label > div:first-child {
+        display: none !important;
     }
     
-    /* Tarjetas de Métricas (Glassmorphism) */
+    /* Estilizar radio como botones flotantes SaaS */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        gap: 10px !important;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        background-color: #111726 !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 12px !important;
+        padding: 14px 18px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        width: 100% !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+        background-color: #1a2336 !important;
+        border-color: #6366f1 !important;
+        transform: translateX(5px) !important;
+    }
+    
+    /* Estado activo del botón de menú */
+    div[data-testid="stRadio"] > div[role="radiogroup"] label[aria-checked="true"],
+    div[data-testid="stRadio"] > div[role="radiogroup"] label:has(input:checked) {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(79, 70, 229, 0.15) 100%) !important;
+        border: 1px solid #6366f1 !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        color: #f8fafc !important;
+        margin: 0 !important;
+    }
+
+    /* 2. TARJETAS DE MÉTRICAS ULTRA-PREMIUM */
     .metric-card {
         background: linear-gradient(145deg, #111726 0%, #0a0e17 100%);
         border: 1px solid #1e293b;
         border-radius: 18px;
         padding: 22px 24px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
         transition: all 0.25s ease-in-out;
     }
     
     .metric-card:hover {
         border-color: #6366f1;
-        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.25);
         transform: translateY(-3px);
     }
     
@@ -77,8 +109,24 @@ st.markdown("""
         letter-spacing: -0.8px;
         line-height: 1.1;
     }
+
+    /* 3. CONTENEDORES Y INPUTS OVERRIDE */
+    div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 12px !important;
+        color: #ffffff !important;
+    }
     
-    /* Tarjetas de Proyectos en Curso */
+    .hero-banner {
+        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #172554 100%);
+        border: 1px solid #312e81;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+    }
+    
     .project-card {
         background: #0f172a;
         border: 1px solid #1e293b;
@@ -86,14 +134,8 @@ st.markdown("""
         padding: 22px;
         margin-bottom: 18px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-        transition: border-color 0.2s ease;
     }
     
-    .project-card:hover {
-        border-color: #3b82f6;
-    }
-    
-    /* Custom Progress Bar CSS */
     .progress-bg {
         background: #1e293b;
         border-radius: 12px;
@@ -109,7 +151,6 @@ st.markdown("""
         border-radius: 12px;
     }
     
-    /* Badges / Etiquetas de Estado */
     .badge-emerald {
         background: rgba(16, 185, 129, 0.12);
         color: #10b981;
@@ -154,36 +195,20 @@ st.markdown("""
         display: inline-block;
     }
     
-    /* Botones Pro */
     .stButton>button {
         border-radius: 12px !important;
         font-weight: 700 !important;
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 0.55rem 1.3rem !important;
+        padding: 0.6rem 1.4rem !important;
         box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35) !important;
-        transition: all 0.2s ease-in-out !important;
     }
     
-    .stButton>button:hover {
-        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.55) !important;
-        transform: translateY(-2px);
-    }
-    
-    /* Dataframes y Tablas Edición */
     div[data-testid="stDataFrame"] {
         border: 1px solid #1e293b;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    
-    /* Contenedores Expander */
-    div[data-testid="stExpander"] {
-        border: 1px solid #1e293b !important;
-        border-radius: 14px !important;
-        background-color: #0f172a !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -196,10 +221,9 @@ def formato_euro(valor):
     return f"{valor:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
 
 # ==========================================
-# PERSISTENCIA EN SESIÓN (SESSION STATE)
+# INICIALIZACIÓN DE DATOS (SESSION STATE)
 # ==========================================
 
-# Tareas Clave del Día (Dashboard)
 if "tareas_diarias" not in st.session_state:
     st.session_state.tareas_diarias = [
         {"tarea": "Llamar a Gimnasio FitLife para revisar propuesta", "hecha": False},
@@ -208,7 +232,6 @@ if "tareas_diarias" not in st.session_state:
         {"tarea": "Reunión de valoración con Clínica Estética Aura", "hecha": False}
     ]
 
-# CRM - Prospectos y Embudo Comercial (Antes de cobrar)
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
         {"Prospecto": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Teléfono / Email": "carlos@fitlife.es", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 2500.0, "Próximo Contacto": "2026-08-02"},
@@ -217,7 +240,6 @@ if "leads" not in st.session_state:
         {"Prospecto": "Panadería Gourmet", "Contacto": "Javier López", "Teléfono / Email": "javier@panaderiagourmet.com", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 1500.0, "Próximo Contacto": "2026-08-05"}
     ])
 
-# Proyectos - Ejecución Operativa (Después de cobrar)
 if "proyectos" not in st.session_state:
     st.session_state.proyectos = pd.DataFrame([
         {"Proyecto": "Campaña SEO & Google Ads", "Cliente Activo": "Clínica Dental Murcia S.L.", "Fase Trabajo": "En Desarrollo", "Progreso (%)": 65, "Fecha Entrega": "2026-08-15", "Responsable": "Ana (SEO)"},
@@ -238,14 +260,14 @@ if "gastos" not in st.session_state:
     ])
 
 # ==========================================
-# MÓDULOS DE LA APLICACIÓN
+# VISTAS DE MÓDULOS
 # ==========================================
 
 def mostrar_dashboard():
     html_banner = """
     <div class="hero-banner">
         <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro</h1>
-        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Panel de control estratégico: rendimiento comercial, entregas y salud financiera.</p>
+        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Centro de mando integral: ventas, operaciones y finanzas.</p>
     </div>
     """
     render_html_clean(html_banner)
@@ -255,9 +277,7 @@ def mostrar_dashboard():
     beneficio = total_ingresos - total_gastos
     valor_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     
-    # Grid KPIs Principales
     c1, c2, c3, c4 = st.columns(4)
-    
     with c1:
         render_html_clean(f"""
         <div class="metric-card">
@@ -266,16 +286,14 @@ def mostrar_dashboard():
             <div style="margin-top: 12px;"><span class="badge-emerald">Facturas Emitidas</span></div>
         </div>
         """)
-        
     with c2:
         render_html_clean(f"""
         <div class="metric-card">
             <div class="metric-title">Beneficio Neto</div>
             <div class="metric-value" style="color: {'#10b981' if beneficio >= 0 else '#f43f5e'};">{formato_euro(beneficio)}</div>
-            <div style="margin-top: 12px;"><span class="badge-indigo">Margen Real</span></div>
+            <div style="margin-top: 12px;"><span class="badge-indigo">Resultado Real</span></div>
         </div>
         """)
-        
     with c3:
         render_html_clean(f"""
         <div class="metric-card">
@@ -284,7 +302,6 @@ def mostrar_dashboard():
             <div style="margin-top: 12px;"><span class="badge-amber">{len(st.session_state.leads)} Prospects</span></div>
         </div>
         """)
-        
     with c4:
         render_html_clean(f"""
         <div class="metric-card">
@@ -295,15 +312,12 @@ def mostrar_dashboard():
         """)
     
     st.write("")
-    
-    # Bloque Principal: Checklist de Tareas Operativas + Gráfica de Tendencia
     col_izq, col_der = st.columns([1.3, 1.7], gap="large")
     
     with col_izq:
         st.subheader("✅ Tareas Clave del Día")
-        st.caption("Organiza tus prioridades: marca completadas, añade o elimina ítems.")
+        st.caption("Prioridades de hoy: marca las completadas, añade o elimina ítems.")
         
-        # Rendimiento interactivo de tareas diarias con eliminación inline
         task_to_remove = None
         for i, t in enumerate(st.session_state.tareas_diarias):
             c_check, c_del = st.columns([0.88, 0.12])
@@ -314,15 +328,13 @@ def mostrar_dashboard():
                 if st.button("❌", key=f"del_t_{i}"):
                     task_to_remove = i
                     
-        # Borrado seguro
         if task_to_remove is not None:
             st.session_state.tareas_diarias.pop(task_to_remove)
             st.rerun()
             
         st.write("")
-        # Añadir nueva tarea rápida al checklist
-        with st.popover("➕ Añadir Nueva Tareas"):
-            nueva_t = st.text_input("Descripción de la tarea:")
+        with st.popover("➕ Añadir Nueva Tarea"):
+            nueva_t = st.text_input("Descripción:")
             if st.button("Guardar en Checklist"):
                 if nueva_t:
                     st.session_state.tareas_diarias.append({"tarea": nueva_t, "hecha": False})
@@ -340,7 +352,7 @@ def mostrar_dashboard():
 
 def mostrar_crm():
     st.title("🎯 CRM & Prospección Comercial")
-    st.markdown("Módulo comercial enfocado en **captación de clientes**, cotizaciones y cierres.")
+    st.markdown("Gestión exclusiva para **conseguir nuevos clientes**, seguimiento de ofertas y reuniones.")
     
     total_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     leads_count = len(st.session_state.leads)
@@ -351,19 +363,12 @@ def mostrar_crm():
     c3.metric("Ticket Medio / Oportunidad", formato_euro(total_pipeline / leads_count if leads_count > 0 else 0))
     
     st.divider()
+    st.subheader("📞 Embudo Comercial")
     
-    st.subheader("📞 Embudo de Ventas Activo")
-    
-    edited_leads = st.data_editor(
-        st.session_state.leads,
-        num_rows="dynamic",
-        use_container_width=True,
-        key="editor_leads"
-    )
+    edited_leads = st.data_editor(st.session_state.leads, num_rows="dynamic", use_container_width=True, key="editor_leads")
     st.session_state.leads = edited_leads
     
     st.divider()
-    
     col_add, col_del = st.columns(2, gap="large")
     
     with col_add:
@@ -379,12 +384,8 @@ def mostrar_crm():
                 if st.form_submit_button("Guardar en CRM"):
                     if prospecto:
                         nuevo_r = pd.DataFrame([{
-                            "Prospecto": prospecto,
-                            "Contacto": contacto,
-                            "Teléfono / Email": email,
-                            "Etapa Comercial": etapa,
-                            "Valor Cotizado (€)": valor,
-                            "Próximo Contacto": str(fecha_c)
+                            "Prospecto": prospecto, "Contacto": contacto, "Teléfono / Email": email,
+                            "Etapa Comercial": etapa, "Valor Cotizado (€)": valor, "Próximo Contacto": str(fecha_c)
                         }])
                         st.session_state.leads = pd.concat([st.session_state.leads, nuevo_r], ignore_index=True)
                         st.success(f"Prospecto '{prospecto}' guardado.")
@@ -402,7 +403,7 @@ def mostrar_crm():
 
 def mostrar_tareas_proyectos():
     st.title("📋 Tareas & Proyectos (Producción)")
-    st.markdown("Módulo operativo para **ejecutar y supervisar los trabajos** de clientes ganados.")
+    st.markdown("Gestión técnica para **ejecutar los trabajos** de los clientes activos.")
     
     proyectos_count = len(st.session_state.proyectos)
     
@@ -412,8 +413,6 @@ def mostrar_tareas_proyectos():
     c3.metric("Listos para Revisión", f"{len(st.session_state.proyectos[st.session_state.proyectos['Fase Trabajo'] == 'En Revisión'])}")
     
     st.divider()
-    
-    # TARJETAS VISUALES DE PROYECTOS (ESTILO SAAS KANBAN)
     st.subheader("⚡ Vista Visual de Proyectos en Curso")
     
     cols = st.columns(3)
@@ -443,18 +442,11 @@ def mostrar_tareas_proyectos():
             render_html_clean(p_html)
             
     st.divider()
-    
     st.subheader("🛠️ Tabla de Gestión Operativa (Editable)")
-    edited_proyectos = st.data_editor(
-        st.session_state.proyectos,
-        num_rows="dynamic",
-        use_container_width=True,
-        key="editor_proyectos"
-    )
+    edited_proyectos = st.data_editor(st.session_state.proyectos, num_rows="dynamic", use_container_width=True, key="editor_proyectos")
     st.session_state.proyectos = edited_proyectos
     
     st.divider()
-    
     col_add_p, col_del_p = st.columns(2, gap="large")
     
     with col_add_p:
@@ -470,12 +462,8 @@ def mostrar_tareas_proyectos():
                 if st.form_submit_button("Crear Proyecto"):
                     if nombre_p:
                         nuevo_p = pd.DataFrame([{
-                            "Proyecto": nombre_p,
-                            "Cliente Activo": cliente_p,
-                            "Fase Trabajo": fase_p,
-                            "Progreso (%)": progreso_p,
-                            "Fecha Entrega": str(fecha_p),
-                            "Responsable": resp_p
+                            "Proyecto": nombre_p, "Cliente Activo": cliente_p, "Fase Trabajo": fase_p,
+                            "Progreso (%)": progreso_p, "Fecha Entrega": str(fecha_p), "Responsable": resp_p
                         }])
                         st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_p], ignore_index=True)
                         st.success(f"Proyecto '{nombre_p}' creado.")
@@ -495,7 +483,6 @@ def mostrar_facturacion():
     st.title("📄 Generador de Facturas Oficiales")
     
     col1, col2 = st.columns([1, 1.2], gap="large")
-    
     with col1:
         st.subheader("📝 Datos de la Factura")
         num_factura = st.text_input("Número de Factura", "FACT-2026-002")
@@ -514,19 +501,14 @@ def mostrar_facturacion():
         
         if st.button("💾 Registrar Factura"):
             nueva_factura = pd.DataFrame([{
-                "Número": num_factura,
-                "Cliente": cliente,
-                "Fecha": str(date.today()),
-                "Base (€)": base_imponible,
-                "IVA (%)": iva,
-                "Total (€)": total
+                "Número": num_factura, "Cliente": cliente, "Fecha": str(date.today()),
+                "Base (€)": base_imponible, "IVA (%)": iva, "Total (€)": total
             }])
             st.session_state.facturas = pd.concat([st.session_state.facturas, nueva_factura], ignore_index=True)
-            st.success(f"Factura {num_factura} registrada. ¡Impacta en tus Finanzas!")
+            st.success(f"Factura {num_factura} registrada.")
 
     with col2:
         st.subheader("👁️ Vista Previa del Documento")
-        
         html_factura = f"""
         <div style="background-color: #ffffff; padding: 32px; border-radius: 12px; color: #111111; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif;">
             <h2 style="color: #0f172a; margin: 0 0 4px 0; font-size: 24px; font-weight: 800;">Presencia Web Pro</h2>
@@ -572,9 +554,7 @@ def mostrar_finanzas():
     beneficio_neto = total_ingresos - total_gastos
     margen_pct = (beneficio_neto / total_ingresos * 100) if total_ingresos > 0 else 0.0
     
-    # METRICAS REDISEÑADAS EN FINANZAS
     c1, c2, c3, c4 = st.columns(4)
-    
     with c1:
         render_html_clean(f"""
         <div class="metric-card">
@@ -583,7 +563,6 @@ def mostrar_finanzas():
             <div style="margin-top: 12px;"><span class="badge-emerald">Facturación Real</span></div>
         </div>
         """)
-        
     with c2:
         render_html_clean(f"""
         <div class="metric-card">
@@ -592,7 +571,6 @@ def mostrar_finanzas():
             <div style="margin-top: 12px;"><span class="badge-rose">Costes Operativos</span></div>
         </div>
         """)
-        
     with c3:
         render_html_clean(f"""
         <div class="metric-card">
@@ -601,7 +579,6 @@ def mostrar_finanzas():
             <div style="margin-top: 12px;"><span class="badge-indigo">Resultado Real</span></div>
         </div>
         """)
-        
     with c4:
         render_html_clean(f"""
         <div class="metric-card">
@@ -612,7 +589,6 @@ def mostrar_finanzas():
         """)
     
     st.divider()
-    
     st.subheader("📊 Balance General de Resultados")
     df_comparativa = pd.DataFrame({
         "Concepto": ["Ingresos Facturados", "Gastos Totales", "Beneficio Neto"],
@@ -622,7 +598,6 @@ def mostrar_finanzas():
     st.bar_chart(df_comparativa, color="#6366f1")
     
     st.divider()
-    
     col_a, col_b = st.columns(2, gap="large")
     
     with col_a:
@@ -643,25 +618,36 @@ def mostrar_finanzas():
                     st.rerun()
 
 # ==========================================
-# MENÚ LATERAL Y NAVEGACIÓN
+# MENÚ LATERAL REDISEÑADO
 # ==========================================
 with st.sidebar:
-    st.markdown("### ⚡ Presencia Web Pro")
-    st.markdown("**Navegación**")
+    st.markdown("""
+    <div style="padding: 8px 0 20px 0; border-bottom: 1px solid #1e293b; margin-bottom: 20px;">
+        <h2 style="color: #ffffff; font-size: 20px; font-weight: 800; margin: 0;">⚡ Presencia Web Pro</h2>
+        <span class="badge-indigo" style="margin-top: 6px;">AGENCY OS v2.0</span>
+    </div>
+    """, unsafe_allow_html=True)
     
     opcion = st.radio(
-        "Selecciona un módulo:",
-        ["Dashboard 360°", "CRM & Prospección", "Facturación PDF", "Tareas & Proyectos", "Finanzas"],
+        "Navegación Principal",
+        [
+            "📊 Dashboard 360°",
+            "🎯 CRM & Prospección",
+            "📋 Tareas & Proyectos",
+            "💰 Finanzas",
+            "📄 Facturación PDF"
+        ],
         label_visibility="collapsed"
     )
 
-if opcion == "Dashboard 360°":
+if opcion == "📊 Dashboard 360°":
     mostrar_dashboard()
-elif opcion == "CRM & Prospección":
+elif opcion == "🎯 CRM & Prospección":
     mostrar_crm()
-elif opcion == "Facturación PDF":
-    mostrar_facturacion()
-elif opcion == "Tareas & Proyectos":
+elif opcion == "📋 Tareas & Proyectos":
     mostrar_tareas_proyectos()
-elif opcion == "Finanzas":
+elif opcion == "💰 Finanzas":
     mostrar_finanzas()
+elif opcion == "📄 Facturación PDF":
+    mostrar_facturacion()
+    
