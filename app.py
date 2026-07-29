@@ -3,86 +3,113 @@ import pandas as pd
 from datetime import date
 
 # ==========================================
-# CONFIGURACIÓN DE PÁGINA Y CSS PREMIUM
+# CONFIGURACIÓN DE PÁGINA Y CSS ULTRA-PREMIUM
 # ==========================================
 st.set_page_config(
-    page_title="Presencia Web Pro - OS",
+    page_title="Presencia Web Pro — Agency OS",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS avanzados para interfaz SaaS moderna
+# Estilos CSS avanzados con estética Dark SaaS (Glassmorphism + Neon Accents)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
+    /* Reset & Tipografía Global */
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
     
     .stApp {
-        background-color: #080b11;
+        background-color: #06090e;
+        color: #f1f5f9;
     }
     
-    /* Tarjetas de métricas */
+    /* Sidebar Estilizada */
+    section[data-testid="stSidebar"] {
+        background-color: #0b0f17 !important;
+        border-right: 1px solid #1e293b !important;
+    }
+    
+    /* Banner Principal (Hero) */
+    .hero-banner {
+        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #172554 100%);
+        border: 1px solid #312e81;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Tarjetas de Métricas (Glassmorphism) */
     .metric-card {
-        background: linear-gradient(145deg, #131924 0%, #0d121a 100%);
-        border: 1px solid #20293a;
-        border-radius: 16px;
-        padding: 22px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-        transition: transform 0.2s ease, border-color 0.2s ease;
+        background: linear-gradient(145deg, #111726 0%, #0a0e17 100%);
+        border: 1px solid #1e293b;
+        border-radius: 18px;
+        padding: 22px 24px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        transition: all 0.25s ease-in-out;
     }
     
     .metric-card:hover {
         border-color: #6366f1;
-        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
+        transform: translateY(-3px);
     }
     
     .metric-title {
         color: #94a3b8;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
         margin-bottom: 8px;
     }
     
     .metric-value {
-        color: #f8fafc;
-        font-size: 28px;
+        color: #ffffff;
+        font-size: 30px;
         font-weight: 800;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.8px;
+        line-height: 1.1;
     }
     
-    /* Tarjetas de Proyectos */
+    /* Tarjetas de Proyectos en Curso */
     .project-card {
         background: #0f172a;
         border: 1px solid #1e293b;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
     }
     
-    /* Progress bar contenedores */
+    .project-card:hover {
+        border-color: #3b82f6;
+    }
+    
+    /* Custom Progress Bar CSS */
     .progress-bg {
         background: #1e293b;
-        border-radius: 10px;
+        border-radius: 12px;
         height: 10px;
         width: 100%;
         overflow: hidden;
-        margin: 10px 0;
+        margin: 12px 0;
     }
     
     .progress-fill {
         background: linear-gradient(90deg, #6366f1 0%, #10b981 100%);
         height: 100%;
-        border-radius: 10px;
+        border-radius: 12px;
     }
     
-    /* Badges de estado */
+    /* Badges / Etiquetas de Estado */
     .badge-emerald {
         background: rgba(16, 185, 129, 0.12);
         color: #10b981;
@@ -115,38 +142,48 @@ st.markdown("""
         font-weight: 700;
         display: inline-block;
     }
-    
-    /* Banner Principal */
-    .hero-banner {
-        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #172554 100%);
-        border: 1px solid #312e81;
+
+    .badge-rose {
+        background: rgba(244, 63, 94, 0.12);
+        color: #f43f5e;
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        padding: 4px 12px;
         border-radius: 20px;
-        padding: 26px 30px;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-block;
     }
     
-    /* Botones primarios */
+    /* Botones Pro */
     .stButton>button {
         border-radius: 12px !important;
         font-weight: 700 !important;
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 0.5rem 1.2rem !important;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
-        transition: all 0.2s ease !important;
+        padding: 0.55rem 1.3rem !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35) !important;
+        transition: all 0.2s ease-in-out !important;
     }
     
     .stButton>button:hover {
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
-        transform: translateY(-1px);
+        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.55) !important;
+        transform: translateY(-2px);
     }
     
+    /* Dataframes y Tablas Edición */
     div[data-testid="stDataFrame"] {
         border: 1px solid #1e293b;
-        border-radius: 14px;
+        border-radius: 16px;
         overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Contenedores Expander */
+    div[data-testid="stExpander"] {
+        border: 1px solid #1e293b !important;
+        border-radius: 14px !important;
+        background-color: #0f172a !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -159,10 +196,10 @@ def formato_euro(valor):
     return f"{valor:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
 
 # ==========================================
-# INICIALIZACIÓN DE DATOS (PERSISTENCIA)
+# PERSISTENCIA EN SESIÓN (SESSION STATE)
 # ==========================================
 
-# Tareas diarias del Dashboard
+# Tareas Clave del Día (Dashboard)
 if "tareas_diarias" not in st.session_state:
     st.session_state.tareas_diarias = [
         {"tarea": "Llamar a Gimnasio FitLife para revisar propuesta", "hecha": False},
@@ -171,7 +208,7 @@ if "tareas_diarias" not in st.session_state:
         {"tarea": "Reunión de valoración con Clínica Estética Aura", "hecha": False}
     ]
 
-# CRM - Prospección Comercial
+# CRM - Prospectos y Embudo Comercial (Antes de cobrar)
 if "leads" not in st.session_state:
     st.session_state.leads = pd.DataFrame([
         {"Prospecto": "Gimnasio FitLife", "Contacto": "Carlos Gómez", "Teléfono / Email": "carlos@fitlife.es", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 2500.0, "Próximo Contacto": "2026-08-02"},
@@ -180,7 +217,7 @@ if "leads" not in st.session_state:
         {"Prospecto": "Panadería Gourmet", "Contacto": "Javier López", "Teléfono / Email": "javier@panaderiagourmet.com", "Etapa Comercial": "Propuesta Enviada", "Valor Cotizado (€)": 1500.0, "Próximo Contacto": "2026-08-05"}
     ])
 
-# Proyectos - Producción Operativa
+# Proyectos - Ejecución Operativa (Después de cobrar)
 if "proyectos" not in st.session_state:
     st.session_state.proyectos = pd.DataFrame([
         {"Proyecto": "Campaña SEO & Google Ads", "Cliente Activo": "Clínica Dental Murcia S.L.", "Fase Trabajo": "En Desarrollo", "Progreso (%)": 65, "Fecha Entrega": "2026-08-15", "Responsable": "Ana (SEO)"},
@@ -208,7 +245,7 @@ def mostrar_dashboard():
     html_banner = """
     <div class="hero-banner">
         <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0 0 6px 0;">⚡ Presencia Web Pro</h1>
-        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Centro de mando operativo, comercial y financiero.</p>
+        <p style="color: #a5b4fc; font-size: 14px; margin: 0;">Panel de control estratégico: rendimiento comercial, entregas y salud financiera.</p>
     </div>
     """
     render_html_clean(html_banner)
@@ -218,7 +255,7 @@ def mostrar_dashboard():
     beneficio = total_ingresos - total_gastos
     valor_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     
-    # KPIs visuales
+    # Grid KPIs Principales
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
@@ -226,7 +263,7 @@ def mostrar_dashboard():
         <div class="metric-card">
             <div class="metric-title">Facturación Cobrada</div>
             <div class="metric-value">{formato_euro(total_ingresos)}</div>
-            <div style="margin-top: 10px;"><span class="badge-emerald">Facturas Emitidas</span></div>
+            <div style="margin-top: 12px;"><span class="badge-emerald">Facturas Emitidas</span></div>
         </div>
         """)
         
@@ -235,7 +272,7 @@ def mostrar_dashboard():
         <div class="metric-card">
             <div class="metric-title">Beneficio Neto</div>
             <div class="metric-value" style="color: {'#10b981' if beneficio >= 0 else '#f43f5e'};">{formato_euro(beneficio)}</div>
-            <div style="margin-top: 10px;"><span class="badge-indigo">Margen Real</span></div>
+            <div style="margin-top: 12px;"><span class="badge-indigo">Margen Real</span></div>
         </div>
         """)
         
@@ -244,7 +281,7 @@ def mostrar_dashboard():
         <div class="metric-card">
             <div class="metric-title">Pipeline Ventas</div>
             <div class="metric-value">{formato_euro(valor_pipeline)}</div>
-            <div style="margin-top: 10px;"><span class="badge-amber">{len(st.session_state.leads)} Prospects</span></div>
+            <div style="margin-top: 12px;"><span class="badge-amber">{len(st.session_state.leads)} Prospects</span></div>
         </div>
         """)
         
@@ -253,20 +290,20 @@ def mostrar_dashboard():
         <div class="metric-card">
             <div class="metric-title">Proyectos Activos</div>
             <div class="metric-value">{len(st.session_state.proyectos)}</div>
-            <div style="margin-top: 10px;"><span class="badge-indigo">En Producción</span></div>
+            <div style="margin-top: 12px;"><span class="badge-indigo">En Producción</span></div>
         </div>
         """)
     
     st.write("")
     
-    # Grid principal: Checklist de Tareas + Gráfica de Rendimiento
+    # Bloque Principal: Checklist de Tareas Operativas + Gráfica de Tendencia
     col_izq, col_der = st.columns([1.3, 1.7], gap="large")
     
     with col_izq:
         st.subheader("✅ Tareas Clave del Día")
-        st.caption("Gestiona tus prioridades de hoy: marca, añade o elimina tareas.")
+        st.caption("Organiza tus prioridades: marca completadas, añade o elimina ítems.")
         
-        # Rendimiento interactivo de tareas con botón de eliminación por fila
+        # Rendimiento interactivo de tareas diarias con eliminación inline
         task_to_remove = None
         for i, t in enumerate(st.session_state.tareas_diarias):
             c_check, c_del = st.columns([0.88, 0.12])
@@ -277,16 +314,16 @@ def mostrar_dashboard():
                 if st.button("❌", key=f"del_t_{i}"):
                     task_to_remove = i
                     
-        # Lógica de borrado seguro
+        # Borrado seguro
         if task_to_remove is not None:
             st.session_state.tareas_diarias.pop(task_to_remove)
             st.rerun()
             
         st.write("")
         # Añadir nueva tarea rápida al checklist
-        with st.popover("➕ Añadir Nueva Tarea"):
+        with st.popover("➕ Añadir Nueva Tareas"):
             nueva_t = st.text_input("Descripción de la tarea:")
-            if st.button("Guardar en el Checklist"):
+            if st.button("Guardar en Checklist"):
                 if nueva_t:
                     st.session_state.tareas_diarias.append({"tarea": nueva_t, "hecha": False})
                     st.rerun()
@@ -303,7 +340,7 @@ def mostrar_dashboard():
 
 def mostrar_crm():
     st.title("🎯 CRM & Prospección Comercial")
-    st.markdown("Gestión de contactos comerciales, seguimiento de ofertas y reuniones de venta.")
+    st.markdown("Módulo comercial enfocado en **captación de clientes**, cotizaciones y cierres.")
     
     total_pipeline = st.session_state.leads["Valor Cotizado (€)"].sum() if not st.session_state.leads.empty else 0.0
     leads_count = len(st.session_state.leads)
@@ -315,7 +352,7 @@ def mostrar_crm():
     
     st.divider()
     
-    st.subheader("📞 Embudo Comercial")
+    st.subheader("📞 Embudo de Ventas Activo")
     
     edited_leads = st.data_editor(
         st.session_state.leads,
@@ -365,7 +402,7 @@ def mostrar_crm():
 
 def mostrar_tareas_proyectos():
     st.title("📋 Tareas & Proyectos (Producción)")
-    st.markdown("Módulo operativo visual para **ejecutar y supervisar los trabajos** de clientes activos.")
+    st.markdown("Módulo operativo para **ejecutar y supervisar los trabajos** de clientes ganados.")
     
     proyectos_count = len(st.session_state.proyectos)
     
@@ -376,7 +413,7 @@ def mostrar_tareas_proyectos():
     
     st.divider()
     
-    # VISTA VISUAL DE TARJETAS DE PROYECTOS (NUEVO REDISEÑO)
+    # TARJETAS VISUALES DE PROYECTOS (ESTILO SAAS KANBAN)
     st.subheader("⚡ Vista Visual de Proyectos en Curso")
     
     cols = st.columns(3)
@@ -535,7 +572,7 @@ def mostrar_finanzas():
     beneficio_neto = total_ingresos - total_gastos
     margen_pct = (beneficio_neto / total_ingresos * 100) if total_ingresos > 0 else 0.0
     
-    # TARJETAS FINANCIAL REDISEÑADAS
+    # METRICAS REDISEÑADAS EN FINANZAS
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
@@ -543,7 +580,7 @@ def mostrar_finanzas():
         <div class="metric-card">
             <div class="metric-title">Ingresos Totales</div>
             <div class="metric-value">{formato_euro(total_ingresos)}</div>
-            <div style="margin-top: 10px;"><span class="badge-emerald">Facturación Real</span></div>
+            <div style="margin-top: 12px;"><span class="badge-emerald">Facturación Real</span></div>
         </div>
         """)
         
@@ -552,7 +589,7 @@ def mostrar_finanzas():
         <div class="metric-card">
             <div class="metric-title">Gastos Totales</div>
             <div class="metric-value" style="color: #f43f5e;">{formato_euro(total_gastos)}</div>
-            <div style="margin-top: 10px;"><span class="badge-amber">Costes Operativos</span></div>
+            <div style="margin-top: 12px;"><span class="badge-rose">Costes Operativos</span></div>
         </div>
         """)
         
@@ -561,7 +598,7 @@ def mostrar_finanzas():
         <div class="metric-card">
             <div class="metric-title">Beneficio Neto</div>
             <div class="metric-value" style="color: {'#10b981' if beneficio_neto >= 0 else '#f43f5e'};">{formato_euro(beneficio_neto)}</div>
-            <div style="margin-top: 10px;"><span class="badge-indigo">Resultado Real</span></div>
+            <div style="margin-top: 12px;"><span class="badge-indigo">Resultado Real</span></div>
         </div>
         """)
         
@@ -570,7 +607,7 @@ def mostrar_finanzas():
         <div class="metric-card">
             <div class="metric-title">Margen Neto (%)</div>
             <div class="metric-value">{margen_pct:.1f}%</div>
-            <div style="margin-top: 10px;"><span class="{ 'badge-emerald' if margen_pct > 20 else 'badge-amber' }">Rentabilidad</span></div>
+            <div style="margin-top: 12px;"><span class="{ 'badge-emerald' if margen_pct > 20 else 'badge-amber' }">Rentabilidad</span></div>
         </div>
         """)
     
